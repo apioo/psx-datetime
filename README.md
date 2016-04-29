@@ -4,7 +4,13 @@ PSX DateTime
 ## About
 
 Stricter date time implementations which only accepts RFC3339 date time strings.
-Handles date time, date, time and duration formats.
+Handles date time, date, time and duration formats. In general the library 
+follows :rfc:`3339#section-5.6` which is a subset of ISO 8601. There are three
+types:
+
+* Date [full-date] (``2015-05-02``)
+* Time [full-time] (``10:51:12``)
+* DateTime [full-date "T" full-time] (``2015-05-02T10:51:12Z``)
 
 ## Usage
 
