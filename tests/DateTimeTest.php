@@ -58,7 +58,7 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(20, $date->getSecond());
         $this->assertEquals(123400, $date->getMicroSecond());
         $this->assertEquals(0, $date->getOffset());
-        $this->assertEquals('2015-04-25T19:35:20.123400Z', $date->toString());
+        $this->assertEquals('2015-04-25T19:35:20Z', $date->toString());
     }
 
     public function testDateTimeOffset()
@@ -88,7 +88,7 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(20, $date->getSecond());
         $this->assertEquals(123400, $date->getMicroSecond());
         $this->assertEquals(3600, $date->getOffset());
-        $this->assertEquals('2015-04-25T19:35:20.123400+01:00', $date->toString());
+        $this->assertEquals('2015-04-25T19:35:20+01:00', $date->toString());
     }
 
     /**
@@ -106,7 +106,7 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         return [
             ['1985-04-12T23:20:50.52Z', '1985-04-12T23:20:50.520000Z'],
             ['1996-12-19T16:39:57-08:00', '1996-12-19T16:39:57-08:00'],
-            ['1937-01-01T12:00:27.87+00:20', '1937-01-01T12:00:27.870000+00:20'],
+            ['1937-01-01T12:00:27.87+00:20', '1937-01-01T12:00:27+00:20'],
         ];
     }
 
