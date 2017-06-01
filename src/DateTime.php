@@ -84,12 +84,7 @@ class DateTime extends \DateTime
     public function toString()
     {
         $date   = $this->format('Y-m-d\TH:i:s');
-        $ms     = $this->getMicroSecond();
         $offset = $this->getOffset();
-
-        if ($ms > 0) {
-            $date.= '.' . $ms;
-        }
 
         if ($offset != 0) {
             $date.= self::getOffsetBySeconds($offset);
