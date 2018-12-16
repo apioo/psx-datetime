@@ -20,6 +20,7 @@
 
 namespace PSX\DateTime\Tests;
 
+use PHPUnit\Framework\TestCase;
 use PSX\DateTime\Time;
 
 /**
@@ -29,7 +30,7 @@ use PSX\DateTime\Time;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class TimeTest extends \PHPUnit_Framework_TestCase
+class TimeTest extends TestCase
 {
     public function testTime()
     {

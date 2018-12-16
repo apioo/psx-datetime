@@ -21,6 +21,7 @@
 namespace PSX\DateTime\Tests;
 
 use DateInterval;
+use PHPUnit\Framework\TestCase;
 use PSX\DateTime\Duration;
 
 /**
@@ -30,7 +31,7 @@ use PSX\DateTime\Duration;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class DurationTest extends \PHPUnit_Framework_TestCase
+class DurationTest extends TestCase
 {
     public function testDuration()
     {

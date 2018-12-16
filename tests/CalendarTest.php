@@ -20,6 +20,7 @@
 
 namespace PSX\DateTime\Tests;
 
+use PHPUnit\Framework\TestCase;
 use PSX\DateTime\Calendar;
 
 /**
@@ -29,7 +30,7 @@ use PSX\DateTime\Calendar;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    http://phpsx.org
  */
-class CalendarTest extends \PHPUnit_Framework_TestCase
+class CalendarTest extends TestCase
 {
     public function testGetter()
     {
