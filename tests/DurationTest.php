@@ -44,6 +44,7 @@ class DurationTest extends TestCase
         $this->assertEquals(35, $duration->getMinute());
         $this->assertEquals(20, $duration->getSecond());
         $this->assertEquals('P2015Y4M25DT19H35M20S', $duration->toString());
+        $this->assertEquals('"P2015Y4M25DT19H35M20S"', \json_encode($duration));
     }
 
     public function testDurationYear()

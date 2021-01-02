@@ -30,7 +30,7 @@ use InvalidArgumentException;
  * @link    http://phpsx.org
  * @see     http://tools.ietf.org/html/rfc3339#section-5.6
  */
-class Time extends \DateTime
+class Time extends \DateTime implements \JsonSerializable
 {
     protected $hour;
     protected $minute;
@@ -85,6 +85,11 @@ class Time extends \DateTime
     }
 
     public function __toString()
+    {
+        return $this->toString();
+    }
+
+    public function jsonSerialize()
     {
         return $this->toString();
     }

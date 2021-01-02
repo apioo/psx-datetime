@@ -31,7 +31,7 @@ use InvalidArgumentException;
  * @link    http://phpsx.org
  * @see     http://tools.ietf.org/html/rfc3339#section-5.6
  */
-class Duration extends DateInterval
+class Duration extends DateInterval implements \JsonSerializable
 {
     public function __construct($duration, $month = null, $day = null, $hour = null, $minute = null, $second = null)
     {
@@ -117,6 +117,11 @@ class Duration extends DateInterval
     }
 
     public function __toString()
+    {
+        return $this->toString();
+    }
+
+    public function jsonSerialize()
     {
         return $this->toString();
     }

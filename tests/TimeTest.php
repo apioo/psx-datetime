@@ -43,6 +43,7 @@ class TimeTest extends TestCase
         $this->assertEquals(0, $time->getOffset());
         $this->assertInstanceOf('DateTimeZone', $time->getTimeZone());
         $this->assertEquals('19:35:20', $time->toString());
+        $this->assertEquals('"19:35:20"', \json_encode($time));
     }
 
     public function testTimeOffset()

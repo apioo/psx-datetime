@@ -42,6 +42,7 @@ class DateTest extends TestCase
         $this->assertEquals(0, $date->getOffset());
         $this->assertInstanceOf('DateTimeZone', $date->getTimeZone());
         $this->assertEquals('2015-04-25', $date->toString());
+        $this->assertEquals('"2015-04-25"', \json_encode($date));
     }
 
     public function testDateOffset()

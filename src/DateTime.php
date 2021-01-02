@@ -32,7 +32,7 @@ use InvalidArgumentException;
  * @link    http://phpsx.org
  * @see     http://tools.ietf.org/html/rfc3339#section-5.6
  */
-class DateTime extends \DateTime
+class DateTime extends \DateTime implements \JsonSerializable
 {
     const HTTP = 'D, d M Y H:i:s \G\M\T';
     const SQL  = 'Y-m-d H:i:s';
@@ -96,6 +96,11 @@ class DateTime extends \DateTime
     }
 
     public function __toString()
+    {
+        return $this->toString();
+    }
+
+    public function jsonSerialize()
     {
         return $this->toString();
     }

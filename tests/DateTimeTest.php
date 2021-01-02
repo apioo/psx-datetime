@@ -45,6 +45,7 @@ class DateTimeTest extends TestCase
         $this->assertEquals(0, $date->getMicroSecond());
         $this->assertEquals(0, $date->getOffset());
         $this->assertEquals('2015-04-25T19:35:20Z', $date->toString());
+        $this->assertEquals('"2015-04-25T19:35:20Z"', \json_encode($date));
     }
 
     public function testDateTimeMicroSeconds()

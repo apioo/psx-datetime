@@ -30,7 +30,7 @@ use InvalidArgumentException;
  * @link    http://phpsx.org
  * @see     http://tools.ietf.org/html/rfc3339#section-5.6
  */
-class Date extends \DateTime
+class Date extends \DateTime implements \JsonSerializable
 {
     protected $year;
     protected $month;
@@ -73,6 +73,11 @@ class Date extends \DateTime
     }
 
     public function __toString()
+    {
+        return $this->toString();
+    }
+
+    public function jsonSerialize()
     {
         return $this->toString();
     }
