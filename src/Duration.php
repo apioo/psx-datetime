@@ -149,7 +149,7 @@ class Duration extends DateInterval implements \JsonSerializable
      * @param DateInterval $interval
      * @return integer
      */
-    public static function getSecondsFromInterval(DateInterval $interval)
+    public static function getSecondsFromInterval(DateInterval $interval): int
     {
         $keys   = [31536000, 2592000, 86400, 3600, 60, 1];
         $values = explode('.', $interval->format('%y.%m.%d.%h.%i.%s'));
@@ -157,7 +157,7 @@ class Duration extends DateInterval implements \JsonSerializable
 
         $value = 0;
         foreach ($result as $key => $val) {
-            $value+= $val * $key;
+            $value+= intval($val) * $key;
         }
 
         return $value;
