@@ -71,27 +71,24 @@ class DateTest extends TestCase
         $this->assertEquals('2014-01-01', (string) $date);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testDateEmpty()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Date('');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testDateInvalid()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Date('foo');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testDateInvalidOffset()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Date('2015-04-25+50:00');
     }
 

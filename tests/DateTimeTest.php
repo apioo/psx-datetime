@@ -133,27 +133,24 @@ class DateTimeTest extends TestCase
         $this->assertEquals(date('Y-m-d\TH:i:s\Z'), $date->toString());
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testDateTimeEmpty()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new DateTime('');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testDateTimeInvalid()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new DateTime('foo');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testDateTimeInvalidOffset()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new DateTime('2015-04-25T19:35:20+50:00');
     }
 

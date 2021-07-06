@@ -87,7 +87,11 @@ class Calendar implements Iterator, Countable
      */
     public function getDays()
     {
-        return cal_days_in_month(CAL_GREGORIAN, $this->date->format('n'), $this->date->format('Y'));
+        return cal_days_in_month(
+            CAL_GREGORIAN,
+            (int) $this->date->format('n'),
+            (int) $this->date->format('Y')
+        );
     }
 
     /**
@@ -97,7 +101,7 @@ class Calendar implements Iterator, Countable
      */
     public function getEasterDate()
     {
-        $easter = new \DateTime($this->getYear() . '-03-21');
+        $easter = new DateTime($this->getYear(), 3, 21);
         $days   = easter_days($this->getYear());
 
         return $easter->add(new DateInterval('P' . $days . 'D'));

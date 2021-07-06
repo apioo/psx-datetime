@@ -151,12 +151,13 @@ class Duration extends DateInterval implements \JsonSerializable
      */
     public static function getSecondsFromInterval(DateInterval $interval)
     {
-        $map   = [31536000, 2592000, 86400, 3600, 60, 1];
-        $parts = explode('.', $interval->format('%y.%m.%d.%h.%i.%s'));
-        $value = 0;
+        $keys   = [31536000, 2592000, 86400, 3600, 60, 1];
+        $values = explode('.', $interval->format('%y.%m.%d.%h.%i.%s'));
+        $result = array_combine($keys, $values);
 
-        foreach ($parts as $key => $val) {
-            $value+= $val * $map[$key];
+        $value = 0;
+        foreach ($result as $key => $val) {
+            $value+= $val * $key;
         }
 
         return $value;

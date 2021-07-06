@@ -99,35 +99,31 @@ class TimeTest extends TestCase
         $this->assertEquals('13:37:12', (string) $time);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testTimeEmpty()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Time('');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testTimeInvalid()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Time('foo');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testTimeInvalidOffset()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Time('19:35:20+50:00');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testTimeInvalidMicroSeconds()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Time('19:35:20.foo');
     }
 

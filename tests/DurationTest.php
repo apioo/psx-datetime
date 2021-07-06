@@ -140,19 +140,17 @@ class DurationTest extends TestCase
         $this->assertEquals('P1Y1M1DT1H1M1S', (string) $duration);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testDurationEmpty()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Duration('');
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
     public function testDurationInvalid()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         new Duration('foo');
     }
 
