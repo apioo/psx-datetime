@@ -33,7 +33,7 @@ use InvalidArgumentException;
  */
 class Duration extends DateInterval implements \JsonSerializable
 {
-    public function __construct($duration, $month = null, $day = null, $hour = null, $minute = null, $second = null)
+    public function __construct($duration, ?int $month = null, ?int $day = null, ?int $hour = null, ?int $minute = null, ?int $second = null)
     {
         if (func_num_args() == 1) {
             parent::__construct($this->validate($duration));
@@ -51,37 +51,37 @@ class Duration extends DateInterval implements \JsonSerializable
         }
     }
 
-    public function getYear()
+    public function getYear(): int
     {
         return $this->y;
     }
 
-    public function getMonth()
+    public function getMonth(): int
     {
         return $this->m;
     }
 
-    public function getDay()
+    public function getDay(): int
     {
         return $this->d;
     }
 
-    public function getHour()
+    public function getHour(): int
     {
         return $this->h;
     }
 
-    public function getMinute()
+    public function getMinute(): int
     {
         return $this->i;
     }
 
-    public function getSecond()
+    public function getSecond(): int
     {
         return $this->s;
     }
 
-    public function toString()
+    public function toString(): string
     {
         $duration = 'P';
 
@@ -126,8 +126,12 @@ class Duration extends DateInterval implements \JsonSerializable
         return $this->toString();
     }
 
-    protected function validate($duration)
+    protected function validate($duration): string
     {
+        if ($duration === null) {
+            throw new InvalidArgumentException('Duration must not be empty');
+        }
+
         $duration = (string) $duration;
         $result   = preg_match('/^' . self::getPattern() . '$/', $duration);
 
@@ -138,16 +142,13 @@ class Duration extends DateInterval implements \JsonSerializable
         return $duration;
     }
 
-    public static function fromDateInterval(\DateInterval $interval)
+    public static function fromDateInterval(\DateInterval $interval): static
     {
-        return new self($interval->y, $interval->m, $interval->d, $interval->h, $interval->i, $interval->s);
+        return new static($interval->y, $interval->m, $interval->d, $interval->h, $interval->i, $interval->s);
     }
 
     /**
      * Returns the seconds of an DateInterval recalculating years, months etc.
-     *
-     * @param DateInterval $interval
-     * @return integer
      */
     public static function getSecondsFromInterval(DateInterval $interval): int
     {

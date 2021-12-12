@@ -46,42 +46,42 @@ class DateTime extends \DateTime implements \JsonSerializable
         }
     }
 
-    public function getYear()
+    public function getYear(): int
     {
         return (int) $this->format('Y');
     }
 
-    public function getMonth()
+    public function getMonth(): int
     {
         return (int) $this->format('m');
     }
 
-    public function getDay()
+    public function getDay(): int
     {
         return (int) $this->format('d');
     }
 
-    public function getHour()
+    public function getHour(): int
     {
         return (int) $this->format('H');
     }
 
-    public function getMinute()
+    public function getMinute(): int
     {
         return (int) $this->format('i');
     }
 
-    public function getSecond()
+    public function getSecond(): int
     {
         return (int) $this->format('s');
     }
 
-    public function getMicroSecond()
+    public function getMicroSecond(): int
     {
         return (int) $this->format('u');
     }
 
-    public function toString()
+    public function toString(): string
     {
         $date   = $this->format('Y-m-d\TH:i:s');
         $offset = $this->getOffset();
@@ -108,7 +108,7 @@ class DateTime extends \DateTime implements \JsonSerializable
     protected function validate($date)
     {
         if ($date === null) {
-            return null;
+            return 'now';
         }
 
         $date = (string) $date;
@@ -127,9 +127,9 @@ class DateTime extends \DateTime implements \JsonSerializable
         return $date;
     }
 
-    public static function fromDateTime(\DateTime $date)
+    public static function fromDateTime(\DateTimeInterface $date)
     {
-        return new self($date->format(\DateTime::RFC3339));
+        return new static($date->format(\DateTime::RFC3339));
     }
 
     public static function getFormat(\DateTime $date)

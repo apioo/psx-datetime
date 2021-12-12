@@ -32,11 +32,7 @@ use InvalidArgumentException;
  */
 class Date extends \DateTime implements \JsonSerializable
 {
-    protected $year;
-    protected $month;
-    protected $day;
-
-    public function __construct($date, $month = null, $day = null)
+    public function __construct($date, ?int $month = null, ?int $day = null)
     {
         if (func_num_args() == 1) {
             parent::__construct($this->validate($date));
@@ -45,22 +41,22 @@ class Date extends \DateTime implements \JsonSerializable
         }
     }
 
-    public function getYear()
+    public function getYear(): int
     {
         return (int) $this->format('Y');
     }
 
-    public function getMonth()
+    public function getMonth(): int
     {
         return (int) $this->format('m');
     }
 
-    public function getDay()
+    public function getDay(): int
     {
         return (int) $this->format('d');
     }
 
-    public function toString()
+    public function toString(): string
     {
         $date   = $this->format('Y-m-d');
         $offset = $this->getOffset();
@@ -82,8 +78,12 @@ class Date extends \DateTime implements \JsonSerializable
         return $this->toString();
     }
 
-    protected function validate($date)
+    protected function validate($date): string
     {
+        if ($date === null) {
+            return 'now';
+        }
+
         $date   = (string) $date;
         $result = preg_match('/^' . self::getPattern() . '$/', $date);
 
@@ -94,9 +94,9 @@ class Date extends \DateTime implements \JsonSerializable
         return $date;
     }
 
-    public static function fromDateTime(\DateTime $date)
+    public static function fromDateTime(\DateTimeInterface $date): static
     {
-        return new self($date->format('Y'), $date->format('m'), $date->format('d'));
+        return new static($date->format('Y'), $date->format('m'), $date->format('d'));
     }
 
     /**

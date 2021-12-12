@@ -34,15 +34,8 @@ use Iterator;
  */
 class Calendar implements Iterator, Countable
 {
-    /**
-     * @var \DateTime
-     */
-    protected $date;
-
-    /**
-     * @var \DateTime
-     */
-    private $itDate;
+    private \DateTime $date;
+    private \DateTime $itDate;
 
     public function __construct(\DateTime $date = null, DateTimeZone $timezone = null)
     {
@@ -56,16 +49,13 @@ class Calendar implements Iterator, Countable
     /**
      * Sets the underlying datetime object and removes the timepart of the
      * datetime object
-     *
-     * @param \DateTime $date
-     * @return void
      */
-    public function setDate(\DateTime $date)
+    public function setDate(\DateTime $date): void
     {
         $this->date = $date->setTime(0, 0, 0);
     }
 
-    public function getDate()
+    public function getDate(): \DateTime
     {
         return $this->date;
     }
@@ -75,7 +65,7 @@ class Calendar implements Iterator, Countable
         $this->date->setTimezone($timezone);
     }
 
-    public function getTimezone()
+    public function getTimezone(): DateTimeZone
     {
         return $this->date->getTimezone();
     }
@@ -96,10 +86,8 @@ class Calendar implements Iterator, Countable
 
     /**
      * Returns the easter date for the current year
-     *
-     * @return \PSX\DateTime\DateTime
      */
-    public function getEasterDate()
+    public function getEasterDate(): DateTime
     {
         $easter = new DateTime($this->getYear(), 3, 21);
         $days   = easter_days($this->getYear());
@@ -132,52 +120,52 @@ class Calendar implements Iterator, Countable
         return $this->date->format('F');
     }
 
-    public function add(DateInterval $interval)
+    public function add(DateInterval $interval): static
     {
         $this->date->add($interval);
 
         return $this;
     }
 
-    public function sub(DateInterval $interval)
+    public function sub(DateInterval $interval): static
     {
         $this->date->sub($interval);
 
         return $this;
     }
 
-    public function nextDay()
+    public function nextDay(): static
     {
         return $this->add(new DateInterval('P1D'));
     }
 
-    public function prevDay()
+    public function prevDay(): static
     {
         return $this->sub(new DateInterval('P1D'));
     }
 
-    public function nextMonth()
+    public function nextMonth(): static
     {
         return $this->add(new DateInterval('P1M'));
     }
 
-    public function prevMonth()
+    public function prevMonth(): static
     {
         return $this->sub(new DateInterval('P1M'));
     }
 
-    public function nextYear()
+    public function nextYear(): static
     {
         return $this->add(new DateInterval('P1Y'));
     }
 
-    public function prevYear()
+    public function prevYear(): static
     {
         return $this->sub(new DateInterval('P1Y'));
     }
 
     // countable
-    public function count()
+    public function count(): int
     {
         return $this->getDays();
     }

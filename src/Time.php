@@ -32,13 +32,7 @@ use InvalidArgumentException;
  */
 class Time extends \DateTime implements \JsonSerializable
 {
-    protected $hour;
-    protected $minute;
-    protected $second;
-    protected $micro;
-    protected $offset;
-
-    public function __construct($time, $minute = null, $second = null, $micro = null, $offset = null)
+    public function __construct($time, ?int $minute = null, ?int $second = null, ?int $micro = null, ?int $offset = null)
     {
         if (func_num_args() == 1) {
             parent::__construct($this->validate($time));
@@ -47,27 +41,27 @@ class Time extends \DateTime implements \JsonSerializable
         }
     }
 
-    public function getHour()
+    public function getHour(): int
     {
         return (int) $this->format('H');
     }
 
-    public function getMinute()
+    public function getMinute(): int
     {
         return (int) $this->format('i');
     }
 
-    public function getSecond()
+    public function getSecond(): int
     {
         return (int) $this->format('s');
     }
 
-    public function getMicroSecond()
+    public function getMicroSecond(): int
     {
         return (int) $this->format('u');
     }
 
-    public function toString()
+    public function toString(): string
     {
         $time   = $this->format('H:i:s');
         $ms     = $this->getMicroSecond();
@@ -94,8 +88,12 @@ class Time extends \DateTime implements \JsonSerializable
         return $this->toString();
     }
 
-    protected function validate($time)
+    protected function validate($time): string
     {
+        if ($time === null) {
+            return 'now';
+        }
+
         $time   = (string) $time;
         $result = preg_match('/^' . self::getPattern() . '$/', $time);
 
@@ -106,9 +104,9 @@ class Time extends \DateTime implements \JsonSerializable
         return $time;
     }
 
-    public static function fromDateTime(\DateTime $date)
+    public static function fromDateTime(\DateTimeInterface $date): static
     {
-        return new self($date->format('H'), $date->format('i'), $date->format('s'));
+        return new static($date->format('H'), $date->format('i'), $date->format('s'));
     }
 
     /**
