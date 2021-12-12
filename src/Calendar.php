@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2017 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,37 +30,38 @@ use Iterator;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 class Calendar implements Iterator, Countable
 {
-    private \DateTime $date;
+    private Date $date;
     private \DateTime $itDate;
 
-    public function __construct(\DateTime $date = null, DateTimeZone $timezone = null)
+    public function __construct(\DateTimeInterface $date = null, DateTimeZone $timezone = null)
     {
-        $this->setDate($date !== null ? $date : new \DateTime());
+        $this->date = Date::fromDateTime($date ?? new \DateTime());
 
         if ($timezone !== null) {
             $this->setTimezone($timezone);
         }
+
+        $this->itDate = new DateTime($this->getYear(), $this->getMonth(), 1);
     }
 
     /**
-     * Sets the underlying datetime object and removes the timepart of the
-     * datetime object
+     * Sets the underlying datetime object and removes the timepart of the datetime object
      */
-    public function setDate(\DateTime $date): void
+    public function setDate(\DateTimeInterface $date): void
     {
-        $this->date = $date->setTime(0, 0, 0);
+        $this->date = Date::fromDateTime($date);
     }
 
-    public function getDate(): \DateTime
+    public function getDate(): Date
     {
         return $this->date;
     }
 
-    public function setTimezone(DateTimeZone $timezone)
+    public function setTimezone(DateTimeZone $timezone): void
     {
         $this->date->setTimezone($timezone);
     }
@@ -72,10 +73,8 @@ class Calendar implements Iterator, Countable
 
     /**
      * Return the days of the current month and year
-     *
-     * @return integer
      */
-    public function getDays()
+    public function getDays(): int
     {
         return cal_days_in_month(
             CAL_GREGORIAN,
@@ -95,27 +94,27 @@ class Calendar implements Iterator, Countable
         return $easter->add(new DateInterval('P' . $days . 'D'));
     }
 
-    public function getWeekNumber()
+    public function getWeekNumber(): int
     {
-        return $this->date->format('W');
+        return (int) $this->date->format('W');
     }
 
-    public function getDay()
+    public function getDay(): int
     {
-        return $this->date->format('j');
+        return (int) $this->date->format('j');
     }
 
-    public function getMonth()
+    public function getMonth(): int
     {
-        return $this->date->format('n');
+        return (int) $this->date->format('n');
     }
 
-    public function getYear()
+    public function getYear(): int
     {
-        return $this->date->format('Y');
+        return (int) $this->date->format('Y');
     }
 
-    public function getMonthName()
+    public function getMonthName(): string
     {
         return $this->date->format('F');
     }
@@ -123,14 +122,12 @@ class Calendar implements Iterator, Countable
     public function add(DateInterval $interval): static
     {
         $this->date->add($interval);
-
         return $this;
     }
 
     public function sub(DateInterval $interval): static
     {
         $this->date->sub($interval);
-
         return $this;
     }
 
@@ -188,7 +185,7 @@ class Calendar implements Iterator, Countable
 
     public function rewind()
     {
-        $this->itDate = new \DateTime($this->getYear() . '-' . $this->getMonth() . '-01');
+        $this->itDate = new DateTime($this->getYear(), $this->getMonth(), 1);
     }
 
     public function valid()

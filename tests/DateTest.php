@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2017 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ use PSX\DateTime\Date;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  */
 class DateTest extends TestCase
 {
@@ -40,7 +40,7 @@ class DateTest extends TestCase
         $this->assertEquals(4, $date->getMonth());
         $this->assertEquals(25, $date->getDay());
         $this->assertEquals(0, $date->getOffset());
-        $this->assertInstanceOf('DateTimeZone', $date->getTimeZone());
+        $this->assertInstanceOf(\DateTimeZone::class, $date->getTimeZone());
         $this->assertEquals('2015-04-25', $date->toString());
         $this->assertEquals('"2015-04-25"', \json_encode($date));
     }
@@ -53,7 +53,7 @@ class DateTest extends TestCase
         $this->assertEquals(4, $date->getMonth());
         $this->assertEquals(25, $date->getDay());
         $this->assertEquals(3600, $date->getOffset());
-        $this->assertInstanceOf('DateTimeZone', $date->getTimeZone());
+        $this->assertInstanceOf(\DateTimeZone::class, $date->getTimeZone());
         $this->assertEquals('2015-04-25+01:00', $date->toString());
     }
 

@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2017 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,17 +27,19 @@ use InvalidArgumentException;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  * @see     http://tools.ietf.org/html/rfc3339#section-5.6
  */
 class Time extends \DateTime implements \JsonSerializable
 {
-    public function __construct($time, ?int $minute = null, ?int $second = null, ?int $micro = null, ?int $offset = null)
+    public function __construct(int|string|\Stringable|null $hour, ?int $minute = null, ?int $second = null)
     {
-        if (func_num_args() == 1) {
-            parent::__construct($this->validate($time));
+        if (is_string($hour) || $hour instanceof \Stringable) {
+            parent::__construct($this->validate((string) $hour));
+        } elseif ($hour !== null && $minute !== null && $second !== null) {
+            parent::__construct('@' . gmmktime($hour, $minute, $second, 1, 1, 1970));
         } else {
-            parent::__construct('@' . gmmktime($time, $minute, $second, 1, 1, 1970));
+            parent::__construct();
         }
     }
 
@@ -88,7 +90,7 @@ class Time extends \DateTime implements \JsonSerializable
         return $this->toString();
     }
 
-    protected function validate($time): string
+    protected function validate(mixed $time): string
     {
         if ($time === null) {
             return 'now';
@@ -104,15 +106,19 @@ class Time extends \DateTime implements \JsonSerializable
         return $time;
     }
 
-    public static function fromDateTime(\DateTimeInterface $date): static
+    public static function fromDateTime(\DateTimeInterface $date): self
     {
-        return new static($date->format('H'), $date->format('i'), $date->format('s'));
+        return new self(
+            (int) $date->format('H'),
+            (int) $date->format('i'),
+            (int) $date->format('s')
+        );
     }
 
     /**
      * @see http://www.w3.org/TR/2012/REC-xmlschema11-2-20120405/datatypes.html#time-lexical-mapping
      */
-    public static function getPattern()
+    public static function getPattern(): string
     {
         return '(([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])(\.([0-9]+))?|(24:00:00(\.0+)?))(Z|(\+|-)((0[0-9]|1[0-3]):([0-5][0-9]|14:00)))?';
     }

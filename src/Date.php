@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2017 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,17 +27,19 @@ use InvalidArgumentException;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  * @see     http://tools.ietf.org/html/rfc3339#section-5.6
  */
 class Date extends \DateTime implements \JsonSerializable
 {
-    public function __construct($date, ?int $month = null, ?int $day = null)
+    public function __construct(int|string|\Stringable|null $year, ?int $month = null, ?int $day = null)
     {
-        if (func_num_args() == 1) {
-            parent::__construct($this->validate($date));
+        if (is_string($year) || $year instanceof \Stringable) {
+            parent::__construct($this->validate((string) $year));
+        } elseif ($month !== null && $day !== null && $year !== null) {
+            parent::__construct('@' . gmmktime(0, 0, 0, $month, $day, $year));
         } else {
-            parent::__construct('@' . gmmktime(0, 0, 0, $month, $day, $date));
+            parent::__construct();
         }
     }
 
@@ -78,15 +80,9 @@ class Date extends \DateTime implements \JsonSerializable
         return $this->toString();
     }
 
-    protected function validate($date): string
+    protected function validate(string $date): string
     {
-        if ($date === null) {
-            return 'now';
-        }
-
-        $date   = (string) $date;
         $result = preg_match('/^' . self::getPattern() . '$/', $date);
-
         if (!$result) {
             throw new InvalidArgumentException('Must be valid date format');
         }
@@ -94,15 +90,19 @@ class Date extends \DateTime implements \JsonSerializable
         return $date;
     }
 
-    public static function fromDateTime(\DateTimeInterface $date): static
+    public static function fromDateTime(\DateTimeInterface $date): self
     {
-        return new static($date->format('Y'), $date->format('m'), $date->format('d'));
+        return new self(
+            (int) $date->format('Y'),
+            (int) $date->format('m'),
+            (int) $date->format('j')
+        );
     }
 
     /**
      * @see http://www.w3.org/TR/2012/REC-xmlschema11-2-20120405/datatypes.html#date-lexical-mapping
      */
-    public static function getPattern()
+    public static function getPattern(): string
     {
         return '-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])(Z|(\+|-)((0[0-9]|1[0-3]):([0-5][0-9]|14:00)))?';
     }

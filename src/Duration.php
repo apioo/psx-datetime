@@ -1,9 +1,9 @@
 <?php
 /*
- * PSX is a open source PHP framework to develop RESTful APIs.
- * For the current version and informations visit <http://phpsx.org>
+ * PSX is an open source PHP framework to develop RESTful APIs.
+ * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2017 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,26 +28,19 @@ use InvalidArgumentException;
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
- * @link    http://phpsx.org
+ * @link    https://phpsx.org
  * @see     http://tools.ietf.org/html/rfc3339#section-5.6
  */
 class Duration extends DateInterval implements \JsonSerializable
 {
-    public function __construct($duration, ?int $month = null, ?int $day = null, ?int $hour = null, ?int $minute = null, ?int $second = null)
+    public function __construct(int|string|\Stringable|null $year, ?int $month = null, ?int $day = null, ?int $hour = null, ?int $minute = null, ?int $second = null)
     {
-        if (func_num_args() == 1) {
-            parent::__construct($this->validate($duration));
+        if (is_string($year) || $year instanceof \Stringable) {
+            parent::__construct($this->validate((string) $year));
+        } elseif ($year !== null && $month !== null && $day !== null && $hour !== null && $minute !== null && $second !== null) {
+            parent::__construct(sprintf('P%sY%sM%sDT%sH%sM%sS', $year, $month, $day, $hour, $minute, $second));
         } else {
-            $interval = 'P';
-            $interval.= ((int) $duration) . 'Y';
-            $interval.= ((int) $month) . 'M';
-            $interval.= ((int) $day) . 'D';
-            $interval.= 'T';
-            $interval.= ((int) $hour) . 'H';
-            $interval.= ((int) $minute) . 'M';
-            $interval.= ((int) $second) . 'S';
-
-            parent::__construct($interval);
+            throw new \InvalidArgumentException('No duration provided');
         }
     }
 
@@ -126,15 +119,9 @@ class Duration extends DateInterval implements \JsonSerializable
         return $this->toString();
     }
 
-    protected function validate($duration): string
+    protected function validate(string $duration): string
     {
-        if ($duration === null) {
-            throw new InvalidArgumentException('Duration must not be empty');
-        }
-
-        $duration = (string) $duration;
-        $result   = preg_match('/^' . self::getPattern() . '$/', $duration);
-
+        $result = preg_match('/^' . self::getPattern() . '$/', $duration);
         if (!$result) {
             throw new InvalidArgumentException('Must be duration format');
         }
@@ -142,9 +129,9 @@ class Duration extends DateInterval implements \JsonSerializable
         return $duration;
     }
 
-    public static function fromDateInterval(\DateInterval $interval): static
+    public static function fromDateInterval(\DateInterval $interval): self
     {
-        return new static($interval->y, $interval->m, $interval->d, $interval->h, $interval->i, $interval->s);
+        return new self($interval->y, $interval->m, $interval->d, $interval->h, $interval->i, $interval->s);
     }
 
     /**
@@ -167,7 +154,7 @@ class Duration extends DateInterval implements \JsonSerializable
     /**
      * @see http://www.w3.org/TR/2012/REC-xmlschema11-2-20120405/datatypes.html#duration-lexical-space
      */
-    public static function getPattern()
+    public static function getPattern(): string
     {
         return '-?P((([0-9]+Y([0-9]+M)?([0-9]+D)?|([0-9]+M)([0-9]+D)?|([0-9]+D))(T(([0-9]+H)([0-9]+M)?([0-9]+(\.[0-9]+)?S)?|([0-9]+M)([0-9]+(\.[0-9]+)?S)?|([0-9]+(\.[0-9]+)?S)))?)|(T(([0-9]+H)([0-9]+M)?([0-9]+(\.[0-9]+)?S)?|([0-9]+M)([0-9]+(\.[0-9]+)?S)?|([0-9]+(\.[0-9]+)?S))))';
     }
