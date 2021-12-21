@@ -127,7 +127,7 @@ class DurationTest extends TestCase
 
     public function testConstructorFull()
     {
-        $duration = new Duration(1, 1, 1, 1, 1, 1);
+        $duration = Duration::create(1, 1, 1, 1, 1, 1);
 
         $this->assertEquals('P1Y1M1DT1H1M1S', $duration->toString());
         $this->assertEquals('1.1.1.1.1.1', $duration->format('%y.%m.%d.%h.%i.%s'));
@@ -135,7 +135,7 @@ class DurationTest extends TestCase
 
     public function testToString()
     {
-        $duration = new Duration(1, 1, 1, 1, 1, 1);
+        $duration = Duration::create(1, 1, 1, 1, 1, 1);
 
         $this->assertEquals('P1Y1M1DT1H1M1S', (string) $duration);
     }

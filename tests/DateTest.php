@@ -59,14 +59,14 @@ class DateTest extends TestCase
 
     public function testConstructorFull()
     {
-        $date = new Date(2014, 1, 1);
+        $date = Date::create(2014, 1, 1);
 
         $this->assertEquals('2014-01-01', $date->toString());
     }
 
     public function testToString()
     {
-        $date = new Date(2014, 1, 1);
+        $date = Date::create(2014, 1, 1);
 
         $this->assertEquals('2014-01-01', (string) $date);
     }

@@ -87,14 +87,14 @@ class TimeTest extends TestCase
 
     public function testConstructorFull()
     {
-        $time = new Time(13, 37, 12);
+        $time = Time::create(13, 37, 12);
 
         $this->assertEquals('13:37:12', $time->toString());
     }
 
     public function testToString()
     {
-        $time = new Time(13, 37, 12);
+        $time = Time::create(13, 37, 12);
 
         $this->assertEquals('13:37:12', (string) $time);
     }

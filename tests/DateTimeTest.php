@@ -114,14 +114,14 @@ class DateTimeTest extends TestCase
 
     public function testConstructorFull()
     {
-        $date = new DateTime(2014, 1, 1, 13, 37, 12);
+        $date = DateTime::create(2014, 1, 1, 13, 37, 12);
 
         $this->assertEquals('2014-01-01T13:37:12Z', $date->toString());
     }
 
     public function testToString()
     {
-        $date = new DateTime(2014, 1, 1, 13, 37, 12);
+        $date = DateTime::create(2014, 1, 1, 13, 37, 12);
 
         $this->assertEquals('2014-01-01T13:37:12Z', (string) $date);
     }
