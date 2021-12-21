@@ -21,7 +21,7 @@
 namespace PSX\DateTime;
 
 use DateInterval;
-use InvalidArgumentException;
+use PSX\DateTime\Exception\InvalidFormatException;
 
 /**
  * Date
@@ -33,14 +33,17 @@ use InvalidArgumentException;
  */
 class Duration extends DateInterval implements \JsonSerializable
 {
-    public function __construct(int|string|\Stringable|null $year, ?int $month = null, ?int $day = null, ?int $hour = null, ?int $minute = null, ?int $second = null)
+    /**
+     * @throws InvalidFormatException
+     */
+    public function __construct(string|\Stringable $duration)
     {
-        if (is_string($year) || $year instanceof \Stringable) {
-            parent::__construct($this->validate((string) $year));
-        } elseif ($year !== null && $month !== null && $day !== null && $hour !== null && $minute !== null && $second !== null) {
-            parent::__construct(sprintf('P%sY%sM%sDT%sH%sM%sS', $year, $month, $day, $hour, $minute, $second));
-        } else {
-            throw new \InvalidArgumentException('No duration provided');
+        $value = $this->validate((string) $duration);
+
+        try {
+            parent::__construct($value);
+        } catch (\Exception $e) {
+            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -119,19 +122,41 @@ class Duration extends DateInterval implements \JsonSerializable
         return $this->toString();
     }
 
+    /**
+     * @throws InvalidFormatException
+     */
     protected function validate(string $duration): string
     {
         $result = preg_match('/^' . self::getPattern() . '$/', $duration);
         if (!$result) {
-            throw new InvalidArgumentException('Must be duration format');
+            throw new InvalidFormatException('Must be duration format');
         }
 
         return $duration;
     }
 
+    /**
+     * @throws InvalidFormatException
+     */
     public static function fromDateInterval(\DateInterval $interval): self
     {
-        return new self($interval->y, $interval->m, $interval->d, $interval->h, $interval->i, $interval->s);
+        try {
+            return new self(sprintf('P%sY%sM%sDT%sH%sM%sS', $interval->y, $interval->m, $interval->d, $interval->h, $interval->i, $interval->s));
+        } catch (\Exception $e) {
+            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * @throws InvalidFormatException
+     */
+    public static function create(int $year, int $month, int $day, int $hour, int $minute, int $second): self
+    {
+        try {
+            return new self(sprintf('P%sY%sM%sDT%sH%sM%sS', $year, $month, $day, $hour, $minute, $second));
+        } catch (\Exception $e) {
+            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**

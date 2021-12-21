@@ -20,7 +20,7 @@
 
 namespace PSX\DateTime;
 
-use InvalidArgumentException;
+use PSX\DateTime\Exception\InvalidFormatException;
 
 /**
  * Stricter date time implementation which accepts only RFC3339 date time
@@ -34,19 +34,24 @@ use InvalidArgumentException;
  */
 class DateTime extends \DateTime implements \JsonSerializable
 {
-    const HTTP = 'D, d M Y H:i:s \G\M\T';
-    const SQL  = 'Y-m-d H:i:s';
+    public const HTTP = 'D, d M Y H:i:s \G\M\T';
+    public const SQL  = 'Y-m-d H:i:s';
 
-    public function __construct(int|string|\Stringable|null $year = null, ?int $month = null, ?int $day = null, ?int $hour = null, ?int $minute = null, ?int $second = null)
+    /**
+     * @throws InvalidFormatException
+     */
+    public function __construct(string|\Stringable|null $dateTime = null)
     {
-        if (is_string($year) || $year instanceof \Stringable) {
-            parent::__construct($this->validate((string) $year));
-        } elseif ($hour !== null && $minute !== null && $second !== null && $month !== null && $day !== null && $year !== null) {
-            parent::__construct('@' . gmmktime($hour, $minute, $second, $month, $day, $year));
-        } elseif ($month !== null && $day !== null && $year !== null) {
-            parent::__construct('@' . gmmktime(0, 0, 0, $month, $day, $year));
+        if ($dateTime !== null) {
+            $value = $this->validate((string) $dateTime);
         } else {
-            parent::__construct();
+            $value = date(\DateTimeInterface::RFC3339, time());
+        }
+
+        try {
+            parent::__construct($value);
+        } catch (\Exception $e) {
+            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -109,6 +114,9 @@ class DateTime extends \DateTime implements \JsonSerializable
         return $this->toString();
     }
 
+    /**
+     * @throws InvalidFormatException
+     */
     protected function validate(string $date): string
     {
         // fix so that we understand mysql date time formats
@@ -118,15 +126,34 @@ class DateTime extends \DateTime implements \JsonSerializable
 
         $result = preg_match('/^' . self::getPattern() . '$/', $date);
         if (!$result) {
-            throw new InvalidArgumentException('Must be valid date time format');
+            throw new InvalidFormatException('Must be valid date time format');
         }
 
         return $date;
     }
 
+    /**
+     * @throws InvalidFormatException
+     */
     public static function fromDateTime(\DateTimeInterface $date): self
     {
-        return new self($date->format(\DateTime::RFC3339));
+        try {
+            return new self($date->format(\DateTimeInterface::RFC3339));
+        } catch (\Exception $e) {
+            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * @throws InvalidFormatException
+     */
+    public static function create(int $year, int $month, int $day, int $hour, int $minute, int $second): self
+    {
+        try {
+            return new self(date(\DateTimeInterface::RFC3339, gmmktime($hour, $minute, $second, $month, $day, $year)));
+        } catch (\Exception $e) {
+            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     public static function getFormat(\DateTime $date): string
@@ -134,7 +161,7 @@ class DateTime extends \DateTime implements \JsonSerializable
         if ($date instanceof Time || $date instanceof Date || $date instanceof DateTime) {
             return $date->toString();
         } else {
-            return $date->getOffset() == 0 ? $date->format('Y-m-d\TH:i:s') . 'Z' : $date->format(\DateTime::RFC3339);
+            return $date->getOffset() == 0 ? $date->format('Y-m-d\TH:i:s') . 'Z' : $date->format(\DateTimeInterface::RFC3339);
         }
     }
 

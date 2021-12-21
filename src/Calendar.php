@@ -45,7 +45,7 @@ class Calendar implements Iterator, Countable
             $this->setTimezone($timezone);
         }
 
-        $this->itDate = new DateTime($this->getYear(), $this->getMonth(), 1);
+        $this->itDate = DateTime::create($this->getYear(), $this->getMonth(), 1, 0, 0, 0);
     }
 
     /**
@@ -88,7 +88,7 @@ class Calendar implements Iterator, Countable
      */
     public function getEasterDate(): DateTime
     {
-        $easter = new DateTime($this->getYear(), 3, 21);
+        $easter = DateTime::create($this->getYear(), 3, 21, 0, 0, 0);
         $days   = easter_days($this->getYear());
 
         return $easter->add(new DateInterval('P' . $days . 'D'));
@@ -185,7 +185,7 @@ class Calendar implements Iterator, Countable
 
     public function rewind()
     {
-        $this->itDate = new DateTime($this->getYear(), $this->getMonth(), 1);
+        $this->itDate = DateTime::create($this->getYear(), $this->getMonth(), 1, 0, 0, 0);
     }
 
     public function valid()

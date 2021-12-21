@@ -20,7 +20,7 @@
 
 namespace PSX\DateTime;
 
-use InvalidArgumentException;
+use PSX\DateTime\Exception\InvalidFormatException;
 
 /**
  * Date
@@ -32,14 +32,21 @@ use InvalidArgumentException;
  */
 class Date extends \DateTime implements \JsonSerializable
 {
-    public function __construct(int|string|\Stringable|null $year, ?int $month = null, ?int $day = null)
+    /**
+     * @throws InvalidFormatException
+     */
+    public function __construct(string|\Stringable|null $date = null)
     {
-        if (is_string($year) || $year instanceof \Stringable) {
-            parent::__construct($this->validate((string) $year));
-        } elseif ($month !== null && $day !== null && $year !== null) {
-            parent::__construct('@' . gmmktime(0, 0, 0, $month, $day, $year));
+        if ($date !== null) {
+            $value = $this->validate((string) $date);
         } else {
-            parent::__construct();
+            $value = date(\DateTimeInterface::RFC3339, gmmktime(0, 0, 0));
+        }
+
+        try {
+            parent::__construct($value);
+        } catch (\Exception $e) {
+            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -80,23 +87,41 @@ class Date extends \DateTime implements \JsonSerializable
         return $this->toString();
     }
 
+    /**
+     * @throws InvalidFormatException
+     */
     protected function validate(string $date): string
     {
         $result = preg_match('/^' . self::getPattern() . '$/', $date);
         if (!$result) {
-            throw new InvalidArgumentException('Must be valid date format');
+            throw new InvalidFormatException('Must be valid date format');
         }
 
         return $date;
     }
 
+    /**
+     * @throws InvalidFormatException
+     */
     public static function fromDateTime(\DateTimeInterface $date): self
     {
-        return new self(
-            (int) $date->format('Y'),
-            (int) $date->format('m'),
-            (int) $date->format('j')
-        );
+        try {
+            return new self($date->format('Y-m-d'));
+        } catch (\Exception $e) {
+            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * @throws InvalidFormatException
+     */
+    public static function create(int $year, int $month, int $day): self
+    {
+        try {
+            return new self(date('Y-m-d', gmmktime(0, 0, 0, $month, $day, $year)));
+        } catch (\Exception $e) {
+            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**

@@ -20,7 +20,7 @@
 
 namespace PSX\DateTime;
 
-use InvalidArgumentException;
+use PSX\DateTime\Exception\InvalidFormatException;
 
 /**
  * Time
@@ -32,14 +32,21 @@ use InvalidArgumentException;
  */
 class Time extends \DateTime implements \JsonSerializable
 {
-    public function __construct(int|string|\Stringable|null $hour, ?int $minute = null, ?int $second = null)
+    /**
+     * @throws InvalidFormatException
+     */
+    public function __construct(string|\Stringable|null $time = null)
     {
-        if (is_string($hour) || $hour instanceof \Stringable) {
-            parent::__construct($this->validate((string) $hour));
-        } elseif ($hour !== null && $minute !== null && $second !== null) {
-            parent::__construct('@' . gmmktime($hour, $minute, $second, 1, 1, 1970));
+        if ($time !== null) {
+            $value = $this->validate((string) $time);
         } else {
-            parent::__construct();
+            $value = date(\DateTimeInterface::RFC3339, gmmktime(null, null, null, 1, 1, 1970));
+        }
+
+        try {
+            parent::__construct($value);
+        } catch (\Exception $e) {
+            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
@@ -90,6 +97,9 @@ class Time extends \DateTime implements \JsonSerializable
         return $this->toString();
     }
 
+    /**
+     * @throws InvalidFormatException
+     */
     protected function validate(mixed $time): string
     {
         if ($time === null) {
@@ -100,19 +110,34 @@ class Time extends \DateTime implements \JsonSerializable
         $result = preg_match('/^' . self::getPattern() . '$/', $time);
 
         if (!$result) {
-            throw new InvalidArgumentException('Must be valid time format');
+            throw new InvalidFormatException('Must be valid time format');
         }
 
         return $time;
     }
 
+    /**
+     * @throws InvalidFormatException
+     */
     public static function fromDateTime(\DateTimeInterface $date): self
     {
-        return new self(
-            (int) $date->format('H'),
-            (int) $date->format('i'),
-            (int) $date->format('s')
-        );
+        try {
+            return new self($date->format('H:i:s'));
+        } catch (\Exception $e) {
+            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+        }
+    }
+
+    /**
+     * @throws InvalidFormatException
+     */
+    public static function create(int $hour, int $minute, int $second): self
+    {
+        try {
+            return new self(date('H:i:s', gmmktime($hour, $minute, $second, 1, 1, 1970)));
+        } catch (\Exception $e) {
+            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
