@@ -16,27 +16,32 @@ Handles date time, date, time and duration formats:
 ```php
 <?php
 
+use PSX\DateTime\Date;
+use PSX\DateTime\DateTime;
+use PSX\DateTime\Duration;
+use PSX\DateTime\Time;
+
 // date time
 $dateTime = new DateTime('2016-03-28T23:27:00Z');
-$dateTime = new DateTime(2016, 3, 28, 23, 27, 0);
+$dateTime = DateTime::create(2016, 3, 28, 23, 27, 0);
 
 echo $dateTime->toString(); // 2016-03-28T23:27:00Z
 
 // date
 $date = new Date('2016-03-28');
-$date = new Date(2016, 3, 28);
+$date = Date::create(2016, 3, 28);
 
 echo $date->toString(); // 2016-03-28
 
 // time
 $time = new Time('23:27:00');
-$time = new Time(23, 27, 0);
+$time = Time::create(23, 27, 0);
 
 echo $time->toString(); // 23:27:00
 
 // duration
 $duration = new Duration('P1D');
-$duration = new Duration(0, 0, 1);
+$duration = Duration::create(0, 0, 1, 0, 0, 0);
 
 echo $duration->toString(); // P0Y0M1D
 
