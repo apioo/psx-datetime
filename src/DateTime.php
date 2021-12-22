@@ -45,13 +45,13 @@ class DateTime extends \DateTime implements \JsonSerializable
         if ($dateTime !== null) {
             $value = $this->validate((string) $dateTime);
         } else {
-            $value = date(\DateTimeInterface::RFC3339, time());
+            $value = date(\DateTimeInterface::RFC3339);
         }
 
         try {
             parent::__construct($value);
         } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+            throw new InvalidFormatException($e->getMessage(), 0, $e);
         }
     }
 
@@ -140,7 +140,7 @@ class DateTime extends \DateTime implements \JsonSerializable
         try {
             return new self($date->format(\DateTimeInterface::RFC3339));
         } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+            throw new InvalidFormatException($e->getMessage(), 0, $e);
         }
     }
 
@@ -152,7 +152,7 @@ class DateTime extends \DateTime implements \JsonSerializable
         try {
             return new self(date(\DateTimeInterface::RFC3339, gmmktime($hour, $minute, $second, $month, $day, $year)));
         } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+            throw new InvalidFormatException($e->getMessage(), 0, $e);
         }
     }
 

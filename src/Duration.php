@@ -43,7 +43,7 @@ class Duration extends DateInterval implements \JsonSerializable
         try {
             parent::__construct($value);
         } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+            throw new InvalidFormatException($e->getMessage(), 0, $e);
         }
     }
 
@@ -143,7 +143,7 @@ class Duration extends DateInterval implements \JsonSerializable
         try {
             return new self(sprintf('P%sY%sM%sDT%sH%sM%sS', $interval->y, $interval->m, $interval->d, $interval->h, $interval->i, $interval->s));
         } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+            throw new InvalidFormatException($e->getMessage(), 0, $e);
         }
     }
 
@@ -155,7 +155,7 @@ class Duration extends DateInterval implements \JsonSerializable
         try {
             return new self(sprintf('P%sY%sM%sDT%sH%sM%sS', $year, $month, $day, $hour, $minute, $second));
         } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+            throw new InvalidFormatException($e->getMessage(), 0, $e);
         }
     }
 

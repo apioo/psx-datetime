@@ -40,13 +40,13 @@ class Date extends \DateTime implements \JsonSerializable
         if ($date !== null) {
             $value = $this->validate((string) $date);
         } else {
-            $value = date(\DateTimeInterface::RFC3339, gmmktime(0, 0, 0));
+            $value = date(\DateTimeInterface::RFC3339);
         }
 
         try {
             parent::__construct($value);
         } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+            throw new InvalidFormatException($e->getMessage(), 0, $e);
         }
     }
 
@@ -108,7 +108,7 @@ class Date extends \DateTime implements \JsonSerializable
         try {
             return new self($date->format('Y-m-d'));
         } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+            throw new InvalidFormatException($e->getMessage(), 0, $e);
         }
     }
 
@@ -120,7 +120,7 @@ class Date extends \DateTime implements \JsonSerializable
         try {
             return new self(date('Y-m-d', gmmktime(0, 0, 0, $month, $day, $year)));
         } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), $e->getCode(), $e);
+            throw new InvalidFormatException($e->getMessage(), 0, $e);
         }
     }
 
