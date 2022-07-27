@@ -109,7 +109,7 @@ class DateTime extends \DateTime implements \JsonSerializable
         return $this->toString();
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): string
     {
         return $this->toString();
     }
@@ -167,11 +167,8 @@ class DateTime extends \DateTime implements \JsonSerializable
 
     /**
      * Returns the offset string based on the given seconds
-     *
-     * @param integer $seconds
-     * @return string
      */
-    public static function getOffsetBySeconds($seconds)
+    public static function getOffsetBySeconds(float|int $seconds): string
     {
         $tmp    = abs($seconds);
         $hour   = (int) ($tmp / 3600);

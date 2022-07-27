@@ -92,7 +92,7 @@ class Time extends \DateTime implements \JsonSerializable
         return $this->toString();
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): string
     {
         return $this->toString();
     }
