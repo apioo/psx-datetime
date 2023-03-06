@@ -23,32 +23,42 @@ namespace PSX\DateTime;
 use PSX\DateTime\Exception\InvalidFormatException;
 
 /**
- * Time
+ * LocalTime
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  * @see     http://tools.ietf.org/html/rfc3339#section-5.6
  */
-class Time extends \DateTime implements \JsonSerializable
+class LocalTime extends \DateTimeImmutable implements \JsonSerializable
 {
-    /**
-     * @throws InvalidFormatException
-     */
-    public function __construct(string|\Stringable|null $time = null)
+    use LocalTimeTrait;
+
+    public function __construct()
     {
-        if ($time !== null) {
-            $value = $this->validate((string) $time);
-        } else {
-            $value = date(\DateTimeInterface::RFC3339);
+
+    }
+
+    public static function now(?\DateTimeZone $timezone = null): self
+    {
+        return new self('now', $timezone);
+    }
+
+    public static function of(int $hour, int $minute, int $second): self
+    {
+        return new self('@' . gmmktime($hour, $minute, $second, 1, 1, 1970));
+    }
+
+    public static function parse(string $time): self
+    {
+        $result = preg_match('/^' . self::getPattern() . '$/', $time);
+        if (!$result) {
+            throw new InvalidFormatException('Must be valid time format');
         }
 
-        try {
-            parent::__construct($value);
-        } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), 0, $e);
-        }
+        return new self($time);
     }
+
 
     public function getHour(): int
     {
@@ -134,7 +144,7 @@ class Time extends \DateTime implements \JsonSerializable
     public static function create(int $hour, int $minute, int $second): self
     {
         try {
-            return new self(date('H:i:s', gmmktime($hour, $minute, $second, 1, 1, 1970)));
+            return new self(date('H:i:s', ));
         } catch (\Exception $e) {
             throw new InvalidFormatException($e->getMessage(), 0, $e);
         }

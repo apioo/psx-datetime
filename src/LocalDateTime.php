@@ -32,10 +32,12 @@ use PSX\DateTime\Exception\InvalidFormatException;
  * @link    https://phpsx.org
  * @see     http://tools.ietf.org/html/rfc3339#section-5.6
  */
-class DateTime extends \DateTime implements \JsonSerializable
+class LocalDateTime extends \DateTime implements \JsonSerializable
 {
     public const HTTP = 'D, d M Y H:i:s \G\M\T';
     public const SQL  = 'Y-m-d H:i:s';
+
+    use LocalDateTrait;
 
     /**
      * @throws InvalidFormatException
@@ -156,9 +158,22 @@ class DateTime extends \DateTime implements \JsonSerializable
         }
     }
 
+    /**
+     * @throws InvalidFormatException
+     */
+    public static function of(int $year, int $month, int $day, int $hour, int $minute, int $second): self
+    {
+
+    }
+
+    public static function parse(int $year, int $month, int $day, int $hour, int $minute, int $second): self
+    {
+
+    }
+
     public static function getFormat(\DateTime $date): string
     {
-        if ($date instanceof Time || $date instanceof Date || $date instanceof DateTime) {
+        if ($date instanceof Time || $date instanceof LocalDate || $date instanceof DateTime) {
             return $date->toString();
         } else {
             return $date->getOffset() == 0 ? $date->format('Y-m-d\TH:i:s') . 'Z' : $date->format(\DateTimeInterface::RFC3339);

@@ -34,12 +34,12 @@ use Iterator;
  */
 class Calendar implements Iterator, Countable
 {
-    private Date $date;
+    private LocalDate $date;
     private \DateTime $itDate;
 
     public function __construct(\DateTimeInterface $date = null, DateTimeZone $timezone = null)
     {
-        $this->date = Date::fromDateTime($date ?? new \DateTime());
+        $this->date = LocalDate::fromDateTime($date ?? new \DateTime());
 
         if ($timezone !== null) {
             $this->setTimezone($timezone);
@@ -53,10 +53,10 @@ class Calendar implements Iterator, Countable
      */
     public function setDate(\DateTimeInterface $date): void
     {
-        $this->date = Date::fromDateTime($date);
+        $this->date = LocalDate::fromDateTime($date);
     }
 
-    public function getDate(): Date
+    public function getDate(): LocalDate
     {
         return $this->date;
     }
