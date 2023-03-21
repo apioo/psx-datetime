@@ -18,27 +18,15 @@
  * limitations under the License.
  */
 
-namespace PSX\DateTime;
+namespace PSX\DateTime\Exception;
 
 /**
- * ChronoUnit
+ * InvalidUnitException
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
- * @see     http://tools.ietf.org/html/rfc3339#section-5.6
  */
-enum ChronoUnit
+class InvalidUnitException extends \InvalidArgumentException
 {
-    case CENTURIES;
-    case DAYS;
-    case DECADES;
-    case HALF_DAYS;
-    case HOURS;
-    case MILLENNIA;
-    case MINUTES;
-    case MONTHS;
-    case SECONDS;
-    case WEEKS;
-    case YEARS;
 }

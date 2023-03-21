@@ -33,6 +33,7 @@ use PSX\DateTime\Exception\InvalidFormatException;
 class LocalDate implements \JsonSerializable
 {
     use LocalDateTrait;
+    use ComparisonTrait;
 
     private \DateTimeImmutable $internal;
 
@@ -56,12 +57,17 @@ class LocalDate implements \JsonSerializable
         return $this->toString();
     }
 
+    public static function from(\DateTimeInterface $date): self
+    {
+        return new self(\DateTimeImmutable::createFromInterface($date));
+    }
+
     public static function now(?\DateTimeZone $timezone = null): self
     {
         return new self(new \DateTimeImmutable('now', $timezone));
     }
 
-    public static function of(int $year, Month $month, int $day): self
+    public static function of(int $year, Month|int $month, int $day): self
     {
         return new self(new \DateTimeImmutable('@' . gmmktime(0, 0, 0, $month, $day, $year)));
     }

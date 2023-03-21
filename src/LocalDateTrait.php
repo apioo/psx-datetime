@@ -20,6 +20,8 @@
 
 namespace PSX\DateTime;
 
+use PSX\DateTime\Exception\InvalidUnitException;
+
 /**
  * LocalDateTrait
  *
@@ -62,11 +64,47 @@ trait LocalDateTrait
 
     public function isLeapYear(): bool
     {
+        return (bool) $this->internal->format('L');
+    }
 
+    public function lengthOfMonth(): int
+    {
+        return (int) $this->internal->format('t');
+    }
+
+    public function lengthOfYear(): int
+    {
+        return $this->isLeapYear() ? 366 : 365;
     }
 
     public function minus(int $amountToSubtract, ChronoUnit $unit): self
     {
+        switch ($unit) {
+            case ChronoUnit::MILLENNIA:
+                return new self($this->internal->sub(new \DateInterval('P' . ($amountToSubtract * 1000) . 'Y')));
+            case ChronoUnit::CENTURIES:
+                return new self($this->internal->sub(new \DateInterval('P' . ($amountToSubtract * 100) . 'Y')));
+            case ChronoUnit::DECADES:
+                return new self($this->internal->sub(new \DateInterval('P' . ($amountToSubtract * 10) . 'Y')));
+            case ChronoUnit::YEARS:
+                return new self($this->internal->sub(new \DateInterval('P' . $amountToSubtract . 'Y')));
+            case ChronoUnit::MONTHS:
+                return new self($this->internal->sub(new \DateInterval('P' . $amountToSubtract . 'M')));
+            case ChronoUnit::WEEKS:
+                return new self($this->internal->sub(new \DateInterval('P' . $amountToSubtract . 'W')));
+            case ChronoUnit::DAYS:
+                return new self($this->internal->sub(new \DateInterval('P' . $amountToSubtract . 'D')));
+            case ChronoUnit::HALF_DAYS:
+                return new self($this->internal->sub(new \DateInterval('PT' . ($amountToSubtract * 12) . 'H')));
+            case ChronoUnit::HOURS:
+                return new self($this->internal->sub(new \DateInterval('PT' . $amountToSubtract . 'H')));
+            case ChronoUnit::MINUTES:
+                return new self($this->internal->sub(new \DateInterval('PT' . $amountToSubtract . 'M')));
+            case ChronoUnit::SECONDS:
+                return new self($this->internal->sub(new \DateInterval('PT' . $amountToSubtract . 'S')));
+        }
+
+        throw new InvalidUnitException('Provided an invalid unit');
     }
 
     public function minusDays(int $daysToSubtract): self
@@ -81,7 +119,7 @@ trait LocalDateTrait
 
     public function minusWeeks(int $weeksToSubtract): self
     {
-        return new self($this->internal->sub(new \DateInterval('P' . ($weeksToSubtract * 7) . 'D')));
+        return new self($this->internal->sub(new \DateInterval('P' . $weeksToSubtract . 'W')));
     }
 
     public function minusYears(int $yearsToSubtract): self
@@ -91,7 +129,32 @@ trait LocalDateTrait
 
     public function plus(int $amountToAdd, ChronoUnit $unit): self
     {
+        switch ($unit) {
+            case ChronoUnit::MILLENNIA:
+                return new self($this->internal->add(new \DateInterval('P' . ($amountToAdd * 1000) . 'Y')));
+            case ChronoUnit::CENTURIES:
+                return new self($this->internal->add(new \DateInterval('P' . ($amountToAdd * 100) . 'Y')));
+            case ChronoUnit::DECADES:
+                return new self($this->internal->add(new \DateInterval('P' . ($amountToAdd * 10) . 'Y')));
+            case ChronoUnit::YEARS:
+                return new self($this->internal->add(new \DateInterval('P' . $amountToAdd . 'Y')));
+            case ChronoUnit::MONTHS:
+                return new self($this->internal->add(new \DateInterval('P' . $amountToAdd . 'M')));
+            case ChronoUnit::WEEKS:
+                return new self($this->internal->add(new \DateInterval('P' . $amountToAdd . 'W')));
+            case ChronoUnit::DAYS:
+                return new self($this->internal->add(new \DateInterval('P' . $amountToAdd . 'D')));
+            case ChronoUnit::HALF_DAYS:
+                return new self($this->internal->add(new \DateInterval('PT' . ($amountToAdd * 12) . 'H')));
+            case ChronoUnit::HOURS:
+                return new self($this->internal->add(new \DateInterval('PT' . $amountToAdd . 'H')));
+            case ChronoUnit::MINUTES:
+                return new self($this->internal->add(new \DateInterval('PT' . $amountToAdd . 'M')));
+            case ChronoUnit::SECONDS:
+                return new self($this->internal->add(new \DateInterval('PT' . $amountToAdd . 'S')));
+        }
 
+        throw new InvalidUnitException('Provided an invalid unit');
     }
 
     public function plusDays(int $daysToAdd): self
@@ -106,7 +169,7 @@ trait LocalDateTrait
 
     public function plusWeeks(int $weeksToAdd): self
     {
-        return new self($this->internal->add(new \DateInterval('P' . ($weeksToAdd * 7) . 'D')));
+        return new self($this->internal->add(new \DateInterval('P' . $weeksToAdd . 'W')));
     }
 
     public function plusYears(int $yearsToAdd): self
@@ -116,21 +179,22 @@ trait LocalDateTrait
 
     public function withDayOfMonth(int $dayOfMonth): self
     {
-
+        return new self($this->internal->setDate($this->getYear(), $this->getMonth(), $dayOfMonth));
     }
 
+    /*
     public function withDayOfYear(int $dayOfYear): self
     {
-
     }
+    */
 
     public function withMonth(int $month): self
     {
-
+        return new self($this->internal->setDate($this->getYear(), $month, $this->getDayOfMonth()));
     }
 
     public function withYear(int $year): self
     {
-
+        return new self($this->internal->setDate($year, $this->getMonth(), $this->getDayOfMonth()));
     }
 }

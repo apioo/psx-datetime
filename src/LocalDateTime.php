@@ -23,9 +23,7 @@ namespace PSX\DateTime;
 use PSX\DateTime\Exception\InvalidFormatException;
 
 /**
- * Stricter date time implementation which accepts only RFC3339 date time
- * strings. Note if we are dropping support for PHP 5.4 this class will extend
- * DateTimeImmutable
+ * LocalDateTime
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
@@ -34,76 +32,20 @@ use PSX\DateTime\Exception\InvalidFormatException;
  */
 class LocalDateTime extends \DateTime implements \JsonSerializable
 {
-    public const HTTP = 'D, d M Y H:i:s \G\M\T';
-    public const SQL  = 'Y-m-d H:i:s';
-
     use LocalDateTrait;
+    use LocalTimeTrait;
+    use ComparisonTrait;
 
-    /**
-     * @throws InvalidFormatException
-     */
-    public function __construct(string|\Stringable|null $dateTime = null)
+    private \DateTimeImmutable $internal;
+
+    private function __construct(\DateTimeImmutable $now)
     {
-        if ($dateTime !== null) {
-            $value = $this->validate((string) $dateTime);
-        } else {
-            $value = date(\DateTimeInterface::RFC3339);
-        }
-
-        try {
-            parent::__construct($value);
-        } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), 0, $e);
-        }
-    }
-
-    public function getYear(): int
-    {
-        return (int) $this->format('Y');
-    }
-
-    public function getMonth(): int
-    {
-        return (int) $this->format('m');
-    }
-
-    public function getDay(): int
-    {
-        return (int) $this->format('d');
-    }
-
-    public function getHour(): int
-    {
-        return (int) $this->format('H');
-    }
-
-    public function getMinute(): int
-    {
-        return (int) $this->format('i');
-    }
-
-    public function getSecond(): int
-    {
-        return (int) $this->format('s');
-    }
-
-    public function getMicroSecond(): int
-    {
-        return (int) $this->format('u');
+        $this->internal = $now;
     }
 
     public function toString(): string
     {
-        $date   = $this->format('Y-m-d\TH:i:s');
-        $offset = $this->getOffset();
-
-        if ($offset != 0) {
-            $date.= self::getOffsetBySeconds($offset);
-        } else {
-            $date.= 'Z';
-        }
-
-        return $date;
+        return $this->internal->format('Y-m-d\TH:i:s\Z');
     }
 
     public function __toString()
@@ -116,10 +58,22 @@ class LocalDateTime extends \DateTime implements \JsonSerializable
         return $this->toString();
     }
 
-    /**
-     * @throws InvalidFormatException
-     */
-    protected function validate(string $date): string
+    public static function from(\DateTimeInterface $dateTime): self
+    {
+        return new self(\DateTimeImmutable::createFromInterface($dateTime));
+    }
+
+    public static function now(?\DateTimeZone $timezone = null): self
+    {
+        return new self(new \DateTimeImmutable('now', $timezone));
+    }
+
+    public static function of(int $year, Month|int $month, int $day, int $hour, int $minute, int $second): self
+    {
+        return new self(new \DateTimeImmutable('@' . gmmktime($hour, $minute, $second, $month, $day, $year)));
+    }
+
+    public static function parse(string $date): self
     {
         // fix so that we understand mysql date time formats
         if (isset($date[10]) && $date[10] == ' ') {
@@ -131,84 +85,7 @@ class LocalDateTime extends \DateTime implements \JsonSerializable
             throw new InvalidFormatException('Must be valid date time format');
         }
 
-        return $date;
-    }
-
-    /**
-     * @throws InvalidFormatException
-     */
-    public static function fromDateTime(\DateTimeInterface $date): self
-    {
-        try {
-            return new self($date->format(\DateTimeInterface::RFC3339));
-        } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), 0, $e);
-        }
-    }
-
-    /**
-     * @throws InvalidFormatException
-     */
-    public static function create(int $year, int $month, int $day, int $hour, int $minute, int $second): self
-    {
-        try {
-            return new self(date(\DateTimeInterface::RFC3339, gmmktime($hour, $minute, $second, $month, $day, $year)));
-        } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), 0, $e);
-        }
-    }
-
-    /**
-     * @throws InvalidFormatException
-     */
-    public static function of(int $year, int $month, int $day, int $hour, int $minute, int $second): self
-    {
-
-    }
-
-    public static function parse(int $year, int $month, int $day, int $hour, int $minute, int $second): self
-    {
-
-    }
-
-    public static function getFormat(\DateTime $date): string
-    {
-        if ($date instanceof Time || $date instanceof LocalDate || $date instanceof DateTime) {
-            return $date->toString();
-        } else {
-            return $date->getOffset() == 0 ? $date->format('Y-m-d\TH:i:s') . 'Z' : $date->format(\DateTimeInterface::RFC3339);
-        }
-    }
-
-    /**
-     * Returns the offset string based on the given seconds
-     */
-    public static function getOffsetBySeconds(float|int $seconds): string
-    {
-        $tmp    = abs($seconds);
-        $hour   = (int) ($tmp / 3600);
-        $minute = (int) (($tmp % 3600) / 60);
-
-        $result = $seconds < 0 ? '-' : '+';
-        $result.= ($hour < 10  ? '0' . $hour   : $hour) . ':';
-        $result.= $minute < 10 ? '0' . $minute : $minute;
-
-        return $result;
-    }
-
-    /**
-     * Returns the number of seconds from the given offset values
-     */
-    public static function getSecondsFromOffset(string $sign, int $hours, int $minutes): int
-    {
-        $offset = $hours * 3600;
-        $offset+= $minutes * 60;
-
-        if ($sign == '-') {
-            $offset = $offset * -1;
-        }
-
-        return $offset;
+        return new self(new \DateTimeImmutable($date));
     }
 
     /**

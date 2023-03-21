@@ -21,24 +21,32 @@
 namespace PSX\DateTime;
 
 /**
- * ChronoUnit
+ * ComparisonTrait
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  * @see     http://tools.ietf.org/html/rfc3339#section-5.6
  */
-enum ChronoUnit
+trait ComparisonTrait
 {
-    case CENTURIES;
-    case DAYS;
-    case DECADES;
-    case HALF_DAYS;
-    case HOURS;
-    case MILLENNIA;
-    case MINUTES;
-    case MONTHS;
-    case SECONDS;
-    case WEEKS;
-    case YEARS;
+    public function getUnixTimestamp(): int
+    {
+        return (int) $this->internal->format('U');
+    }
+
+    public function isAfter(self $date): bool
+    {
+        return $this->getUnixTimestamp() > $date->getUnixTimestamp();
+    }
+
+    public function isBefore(self $date): bool
+    {
+        return $this->getUnixTimestamp() < $date->getUnixTimestamp();
+    }
+
+    public function isEqual(self $date): bool
+    {
+        return $this->getUnixTimestamp() === $date->getUnixTimestamp();
+    }
 }

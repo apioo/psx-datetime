@@ -33,68 +33,18 @@ use PSX\DateTime\Exception\InvalidFormatException;
 class LocalTime extends \DateTimeImmutable implements \JsonSerializable
 {
     use LocalTimeTrait;
+    use ComparisonTrait;
 
-    public function __construct()
+    private \DateTimeImmutable $internal;
+
+    private function __construct(\DateTimeImmutable $now)
     {
-
-    }
-
-    public static function now(?\DateTimeZone $timezone = null): self
-    {
-        return new self('now', $timezone);
-    }
-
-    public static function of(int $hour, int $minute, int $second): self
-    {
-        return new self('@' . gmmktime($hour, $minute, $second, 1, 1, 1970));
-    }
-
-    public static function parse(string $time): self
-    {
-        $result = preg_match('/^' . self::getPattern() . '$/', $time);
-        if (!$result) {
-            throw new InvalidFormatException('Must be valid time format');
-        }
-
-        return new self($time);
-    }
-
-
-    public function getHour(): int
-    {
-        return (int) $this->format('H');
-    }
-
-    public function getMinute(): int
-    {
-        return (int) $this->format('i');
-    }
-
-    public function getSecond(): int
-    {
-        return (int) $this->format('s');
-    }
-
-    public function getMicroSecond(): int
-    {
-        return (int) $this->format('u');
+        $this->internal = $now;
     }
 
     public function toString(): string
     {
-        $time   = $this->format('H:i:s');
-        $ms     = $this->getMicroSecond();
-        $offset = $this->getOffset();
-
-        if ($ms > 0) {
-            $time.= '.' . $ms;
-        }
-
-        if ($offset != 0) {
-            $time.= DateTime::getOffsetBySeconds($offset);
-        }
-
-        return $time;
+        return $this->internal->format('H:i:s');
     }
 
     public function __toString()
@@ -107,47 +57,29 @@ class LocalTime extends \DateTimeImmutable implements \JsonSerializable
         return $this->toString();
     }
 
-    /**
-     * @throws InvalidFormatException
-     */
-    protected function validate(mixed $time): string
+    public static function from(\DateTimeInterface $time): self
     {
-        if ($time === null) {
-            return 'now';
-        }
+        return new self(\DateTimeImmutable::createFromInterface($time));
+    }
 
-        $time   = (string) $time;
-        $result = preg_match('/^' . self::getPattern() . '$/', $time);
+    public static function now(?\DateTimeZone $timezone = null): self
+    {
+        return new self(new \DateTimeImmutable('now', $timezone));
+    }
 
+    public static function of(int $hour, int $minute, int $second): self
+    {
+        return new self(new \DateTimeImmutable('@' . gmmktime($hour, $minute, $second, 1, 1, 1970)));
+    }
+
+    public static function parse(string $date): self
+    {
+        $result = preg_match('/^' . self::getPattern() . '$/', $date);
         if (!$result) {
             throw new InvalidFormatException('Must be valid time format');
         }
 
-        return $time;
-    }
-
-    /**
-     * @throws InvalidFormatException
-     */
-    public static function fromDateTime(\DateTimeInterface $date): self
-    {
-        try {
-            return new self($date->format('H:i:s'));
-        } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), 0, $e);
-        }
-    }
-
-    /**
-     * @throws InvalidFormatException
-     */
-    public static function create(int $hour, int $minute, int $second): self
-    {
-        try {
-            return new self(date('H:i:s', ));
-        } catch (\Exception $e) {
-            throw new InvalidFormatException($e->getMessage(), 0, $e);
-        }
+        return new self(new \DateTimeImmutable($date));
     }
 
     /**
