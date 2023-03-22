@@ -74,7 +74,7 @@ class LocalDate implements \JsonSerializable
 
     public static function of(int $year, Month|int $month, int $day): self
     {
-        return new self(new \DateTimeImmutable('@' . gmmktime(0, 0, 0, $month, $day, $year)));
+        return new self(new \DateTimeImmutable('@' . gmmktime(0, 0, 0, $month instanceof Month ? $month->value : $month, $day, $year)));
     }
 
     public static function parse(string $date): self
