@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,15 +20,13 @@
 
 namespace PSX\DateTime;
 
-use PSX\DateTime\Exception\InvalidFormatException;
-
 /**
- * Month
+ * A month-of-year, such as 'July'
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
- * @see     http://tools.ietf.org/html/rfc3339#section-5.6
+ * @see     https://docs.oracle.com/javase/8/docs/api/java/time/Month.html
  */
 enum Month: int
 {

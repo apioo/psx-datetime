@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@
  */
 
 namespace PSX\DateTime;
-
-use PSX\DateTime\Exception\InvalidUnitException;
 
 /**
  * LocalDateTrait
@@ -77,36 +75,6 @@ trait LocalDateTrait
         return $this->isLeapYear() ? 366 : 365;
     }
 
-    public function minus(int $amountToSubtract, ChronoUnit $unit): self
-    {
-        switch ($unit) {
-            case ChronoUnit::MILLENNIA:
-                return new self($this->internal->sub(new \DateInterval('P' . ($amountToSubtract * 1000) . 'Y')));
-            case ChronoUnit::CENTURIES:
-                return new self($this->internal->sub(new \DateInterval('P' . ($amountToSubtract * 100) . 'Y')));
-            case ChronoUnit::DECADES:
-                return new self($this->internal->sub(new \DateInterval('P' . ($amountToSubtract * 10) . 'Y')));
-            case ChronoUnit::YEARS:
-                return new self($this->internal->sub(new \DateInterval('P' . $amountToSubtract . 'Y')));
-            case ChronoUnit::MONTHS:
-                return new self($this->internal->sub(new \DateInterval('P' . $amountToSubtract . 'M')));
-            case ChronoUnit::WEEKS:
-                return new self($this->internal->sub(new \DateInterval('P' . $amountToSubtract . 'W')));
-            case ChronoUnit::DAYS:
-                return new self($this->internal->sub(new \DateInterval('P' . $amountToSubtract . 'D')));
-            case ChronoUnit::HALF_DAYS:
-                return new self($this->internal->sub(new \DateInterval('PT' . ($amountToSubtract * 12) . 'H')));
-            case ChronoUnit::HOURS:
-                return new self($this->internal->sub(new \DateInterval('PT' . $amountToSubtract . 'H')));
-            case ChronoUnit::MINUTES:
-                return new self($this->internal->sub(new \DateInterval('PT' . $amountToSubtract . 'M')));
-            case ChronoUnit::SECONDS:
-                return new self($this->internal->sub(new \DateInterval('PT' . $amountToSubtract . 'S')));
-        }
-
-        throw new InvalidUnitException('Provided an invalid unit');
-    }
-
     public function minusDays(int $daysToSubtract): self
     {
         return new self($this->internal->sub(new \DateInterval('P' . $daysToSubtract . 'D')));
@@ -125,36 +93,6 @@ trait LocalDateTrait
     public function minusYears(int $yearsToSubtract): self
     {
         return new self($this->internal->sub(new \DateInterval('P' . $yearsToSubtract . 'Y')));
-    }
-
-    public function plus(int $amountToAdd, ChronoUnit $unit): self
-    {
-        switch ($unit) {
-            case ChronoUnit::MILLENNIA:
-                return new self($this->internal->add(new \DateInterval('P' . ($amountToAdd * 1000) . 'Y')));
-            case ChronoUnit::CENTURIES:
-                return new self($this->internal->add(new \DateInterval('P' . ($amountToAdd * 100) . 'Y')));
-            case ChronoUnit::DECADES:
-                return new self($this->internal->add(new \DateInterval('P' . ($amountToAdd * 10) . 'Y')));
-            case ChronoUnit::YEARS:
-                return new self($this->internal->add(new \DateInterval('P' . $amountToAdd . 'Y')));
-            case ChronoUnit::MONTHS:
-                return new self($this->internal->add(new \DateInterval('P' . $amountToAdd . 'M')));
-            case ChronoUnit::WEEKS:
-                return new self($this->internal->add(new \DateInterval('P' . $amountToAdd . 'W')));
-            case ChronoUnit::DAYS:
-                return new self($this->internal->add(new \DateInterval('P' . $amountToAdd . 'D')));
-            case ChronoUnit::HALF_DAYS:
-                return new self($this->internal->add(new \DateInterval('PT' . ($amountToAdd * 12) . 'H')));
-            case ChronoUnit::HOURS:
-                return new self($this->internal->add(new \DateInterval('PT' . $amountToAdd . 'H')));
-            case ChronoUnit::MINUTES:
-                return new self($this->internal->add(new \DateInterval('PT' . $amountToAdd . 'M')));
-            case ChronoUnit::SECONDS:
-                return new self($this->internal->add(new \DateInterval('PT' . $amountToAdd . 'S')));
-        }
-
-        throw new InvalidUnitException('Provided an invalid unit');
     }
 
     public function plusDays(int $daysToAdd): self
@@ -177,9 +115,17 @@ trait LocalDateTrait
         return new self($this->internal->add(new \DateInterval('P' . $yearsToAdd . 'Y')));
     }
 
+    /**
+     * Calculates the period between this date and another date as a Period
+     */
+    public function until(LocalDate $endDateExclusive): Period
+    {
+        return Period::from($this->internal->diff($endDateExclusive->toDateTime()));
+    }
+
     public function withDayOfMonth(int $dayOfMonth): self
     {
-        return new self($this->internal->setDate($this->getYear(), $this->getMonth(), $dayOfMonth));
+        return new self($this->internal->setDate($this->getYear(), $this->getMonthValue(), $dayOfMonth));
     }
 
     /*
@@ -195,6 +141,6 @@ trait LocalDateTrait
 
     public function withYear(int $year): self
     {
-        return new self($this->internal->setDate($year, $this->getMonth(), $this->getDayOfMonth()));
+        return new self($this->internal->setDate($year, $this->getMonthValue(), $this->getDayOfMonth()));
     }
 }

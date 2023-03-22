@@ -3,7 +3,7 @@
  * PSX is an open source PHP framework to develop RESTful APIs.
  * For the current version and information visit <https://phpsx.org>
  *
- * Copyright 2010-2022 Christoph Kappestein <christoph.kappestein@gmail.com>
+ * Copyright 2010-2023 Christoph Kappestein <christoph.kappestein@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,14 +23,14 @@ namespace PSX\DateTime;
 use PSX\DateTime\Exception\InvalidFormatException;
 
 /**
- * LocalDateTime
+ * A date-time without a time-zone in the ISO-8601 calendar system, such as 2007-12-03T10:15:30
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
- * @see     http://tools.ietf.org/html/rfc3339#section-5.6
+ * @see     https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html
  */
-class LocalDateTime extends \DateTime implements \JsonSerializable
+class LocalDateTime implements \JsonSerializable
 {
     use LocalDateTrait;
     use LocalTimeTrait;
@@ -46,6 +46,11 @@ class LocalDateTime extends \DateTime implements \JsonSerializable
     public function toString(): string
     {
         return $this->internal->format('Y-m-d\TH:i:s\Z');
+    }
+
+    public function toDateTime(): \DateTimeImmutable
+    {
+        return $this->internal;
     }
 
     public function __toString()
