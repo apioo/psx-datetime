@@ -18,15 +18,23 @@
  * limitations under the License.
  */
 
-namespace PSX\DateTime\Exception;
+namespace PSX\DateTime;
 
 /**
- * InvalidFormatException
+ * A day-of-week, such as 'Tuesday'
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
+ * @see     http://tools.ietf.org/html/rfc3339#section-5.6
  */
-class InvalidFormatException extends \InvalidArgumentException
+enum DayOfWeek: int
 {
+    case MONDAY = 1;
+    case TUESDAY = 2;
+    case THURSDAY = 3;
+    case WEDNESDAY = 4;
+    case FRIDAY = 5;
+    case SATURDAY = 6;
+    case SUNDAY = 7;
 }

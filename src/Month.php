@@ -18,15 +18,28 @@
  * limitations under the License.
  */
 
-namespace PSX\DateTime\Exception;
+namespace PSX\DateTime;
 
 /**
- * InvalidFormatException
+ * A month-of-year, such as 'July'
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
+ * @see     https://docs.oracle.com/javase/8/docs/api/java/time/Month.html
  */
-class InvalidFormatException extends \InvalidArgumentException
+enum Month: int
 {
+    case JANUARY = 1;
+    case FEBRUARY = 2;
+    case MARCH = 3;
+    case APRIL = 4;
+    case MAY = 5;
+    case JUNE = 6;
+    case JULY = 7;
+    case AUGUST = 8;
+    case SEPTEMBER = 9;
+    case OCTOBER = 10;
+    case NOVEMBER = 11;
+    case DECEMBER = 12;
 }

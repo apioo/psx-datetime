@@ -21,12 +21,12 @@
 namespace PSX\DateTime\Exception;
 
 /**
- * InvalidFormatException
+ * InvalidUnitException
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class InvalidFormatException extends \InvalidArgumentException
+class InvalidUnitException extends \InvalidArgumentException
 {
 }

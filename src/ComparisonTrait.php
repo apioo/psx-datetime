@@ -18,15 +18,35 @@
  * limitations under the License.
  */
 
-namespace PSX\DateTime\Exception;
+namespace PSX\DateTime;
 
 /**
- * InvalidFormatException
+ * ComparisonTrait
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
+ * @see     http://tools.ietf.org/html/rfc3339#section-5.6
  */
-class InvalidFormatException extends \InvalidArgumentException
+trait ComparisonTrait
 {
+    public function getUnixTimestamp(): int
+    {
+        return (int) $this->internal->format('U');
+    }
+
+    public function isAfter(self $date): bool
+    {
+        return $this->getUnixTimestamp() > $date->getUnixTimestamp();
+    }
+
+    public function isBefore(self $date): bool
+    {
+        return $this->getUnixTimestamp() < $date->getUnixTimestamp();
+    }
+
+    public function isEqual(self $date): bool
+    {
+        return $this->getUnixTimestamp() === $date->getUnixTimestamp();
+    }
 }

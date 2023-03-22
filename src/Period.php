@@ -23,14 +23,14 @@ namespace PSX\DateTime;
 use PSX\DateTime\Exception\InvalidFormatException;
 
 /**
- * A time-based amount of time, such as '34.5 seconds'
+ * A date-based amount of time in the ISO-8601 calendar system, such as '2 years, 3 months and 4 days'
  *
  * @author  Christoph Kappestein <christoph.kappestein@gmail.com>
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
- * @see     https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html
+ * @see     https://docs.oracle.com/javase/8/docs/api/java/time/Period.html
  */
-class Duration implements \JsonSerializable
+class Period implements \JsonSerializable
 {
     private \DateInterval $internal;
 
@@ -40,31 +40,31 @@ class Duration implements \JsonSerializable
     }
 
     /**
-     * Gets the number of hours in this duration
+     * Gets the amount of days of this period
      */
-    public function getHours(): int
+    public function getDays(): int
     {
-        return $this->internal->h;
+        return $this->internal->d;
     }
 
     /**
-     * Gets the number of hours in this duration
+     * Gets the amount of months of this period
      */
-    public function getMinutes(): int
+    public function getMonths(): int
     {
-        return $this->internal->i;
+        return $this->internal->m;
     }
 
     /**
-     * Gets the number of seconds in this duration
+     * Gets the amount of years of this period
      */
-    public function getSeconds(): int
+    public function getYears(): int
     {
-        return $this->internal->s;
+        return $this->internal->y;
     }
 
     /**
-     * Checks if this duration is negative, excluding zero
+     * Checks if any of the three units of this period are negative
      */
     public function isNegative(): bool
     {
@@ -72,45 +72,45 @@ class Duration implements \JsonSerializable
     }
 
     /**
-     * Checks if this duration is zero length
+     * Checks if all three units of this period are zero
      */
     public function isZero(): bool
     {
-        return $this->internal->h === 0 && $this->internal->i === 0 && $this->internal->s === 0;
+        return $this->internal->y === 0 && $this->internal->m === 0 && $this->internal->d === 0;
     }
 
     /**
-     * Returns a copy of this duration with the specified duration in hours subtracted
+     * Returns a copy of this period with the specified days subtracted
      */
-    public function minusHours(int $hoursToSubtract): self
+    public function minusDays(int $daysToSubtract): self
     {
         $internal = clone $this->internal;
-        $internal->h = $internal->h - $hoursToSubtract;
+        $internal->d = $internal->d - $daysToSubtract;
         return new self($internal);
     }
 
     /**
-     * Returns a copy of this duration with the specified duration in hours subtracted
+     * Returns a copy of this period with the specified months subtracted
      */
-    public function minusMinutes(int $minutesToSubtract): self
+    public function minusMonths(int $monthsToSubtract): self
     {
         $internal = clone $this->internal;
-        $internal->i = $internal->i - $minutesToSubtract;
+        $internal->m = $internal->m - $monthsToSubtract;
         return new self($internal);
     }
 
     /**
-     * Returns a copy of this duration with the specified duration in hours subtracted
+     * Returns a copy of this period with the specified years subtracted
      */
-    public function minusSeconds(int $secondsToSubtract): self
+    public function minusYears(int $yearsToSubtract): self
     {
         $internal = clone $this->internal;
-        $internal->s = $internal->s - $secondsToSubtract;
+        $internal->y = $internal->y - $yearsToSubtract;
         return new self($internal);
     }
 
     /**
-     * Returns a copy of this duration with the length negated
+     * Returns a copy of this period with the specified years subtracted
      */
     public function negated(): self
     {
@@ -120,80 +120,79 @@ class Duration implements \JsonSerializable
     }
 
     /**
-     * Returns a copy of this duration with the specified duration in hours added
+     * Returns a copy of this period with the specified days added
      */
-    public function plusHours(int $hoursToAdd): self
+    public function plusDays(int $daysToAdd): self
     {
         $internal = clone $this->internal;
-        $internal->h = $internal->h + $hoursToAdd;
+        $internal->d = $internal->d + $daysToAdd;
         return new self($internal);
     }
 
     /**
-     * Returns a copy of this duration with the specified duration in minutes added
+     * Returns a copy of this period with the specified months added
      */
-    public function plusMinutes(int $minutesToAdd): self
+    public function plusMonths(int $monthsToAdd): self
     {
         $internal = clone $this->internal;
-        $internal->i = $internal->i + $minutesToAdd;
+        $internal->m = $internal->m + $monthsToAdd;
         return new self($internal);
     }
 
     /**
-     * Returns a copy of this duration with the specified duration in seconds added
+     * Returns a copy of this period with the specified years added
      */
-    public function plusSeconds(int $secondsToAdd): self
+    public function plusYears(int $yearsToAdd): self
     {
         $internal = clone $this->internal;
-        $internal->s = $internal->s + $secondsToAdd;
+        $internal->y = $internal->y + $yearsToAdd;
         return new self($internal);
     }
 
     /**
-     * Returns a copy of this period with the specified amount of hours
+     * Returns a copy of this period with the specified amount of days
      */
-    public function withHours(int $hours): self
+    public function withDays(int $days): self
     {
         $internal = clone $this->internal;
-        $internal->h = $hours;
+        $internal->d = $days;
         return new self($internal);
     }
 
     /**
-     * Returns a copy of this period with the specified amount of minutes
+     * Returns a copy of this period with the specified amount of months
      */
-    public function withMinutes(int $minutes): self
+    public function withMonths(int $months): self
     {
         $internal = clone $this->internal;
-        $internal->i = $minutes;
+        $internal->m = $months;
         return new self($internal);
     }
 
     /**
-     * Returns a copy of this period with the specified amount of seconds
+     * Returns a copy of this period with the specified amount of years
      */
-    public function withSeconds(int $seconds): self
+    public function withYears(int $years): self
     {
         $internal = clone $this->internal;
-        $internal->s = $seconds;
+        $internal->y = $years;
         return new self($internal);
     }
 
     public function toString(): string
     {
         $duration = 'P';
-        $duration.= 'T';
 
-        if ($this->internal->h > 0) {
-            $duration.= $this->internal->h . 'H';
+        if ($this->internal->y > 0) {
+            $duration.= $this->internal->y . 'Y';
         }
 
-        if ($this->internal->i > 0) {
-            $duration.= $this->internal->i . 'M';
+        if ($this->internal->m > 0) {
+            $duration.= $this->internal->m . 'M';
         }
 
-        if ($this->internal->s > 0) {
-            $duration.= $this->internal->s . 'S';
+        if ($this->internal->d > 0) {
+            $duration.= $this->internal->d . 'D';
         }
 
         return $duration;
@@ -214,24 +213,29 @@ class Duration implements \JsonSerializable
         return new self($interval);
     }
 
-    public static function of(int $hours, int $minutes, int $seconds): self
+    public static function of(int $years, int $months, int $days): self
     {
-        return new self(new \DateInterval('PT' . $hours . 'H' . $minutes . 'M' . $seconds . 'S'));
+        return new self(new \DateInterval('P' . $years . 'Y' . $months . 'M' . $days . 'D'));
     }
 
-    public static function ofHours(int $hours): self
+    public static function ofDays(int $days): self
     {
-        return new self(new \DateInterval('PT' . $hours . 'H'));
+        return new self(new \DateInterval('P' . $days . 'D'));
     }
 
-    public static function ofMinutes(int $minutes): self
+    public static function ofMonths(int $months): self
     {
-        return new self(new \DateInterval('PT' . $minutes . 'M'));
+        return new self(new \DateInterval('P' . $months . 'M'));
     }
 
-    public static function ofSeconds(int $seconds): self
+    public static function ofWeeks(int $weeks): self
     {
-        return new self(new \DateInterval('PT' . $seconds . 'S'));
+        return new self(new \DateInterval('P' . $weeks . 'W'));
+    }
+
+    public static function ofYears(int $years): self
+    {
+        return new self(new \DateInterval('P' . $years . 'Y'));
     }
 
     /**
