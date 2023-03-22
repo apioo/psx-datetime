@@ -67,9 +67,9 @@ class LocalTime implements \JsonSerializable
         return new self(\DateTimeImmutable::createFromInterface($time));
     }
 
-    public static function now(?\DateTimeZone $timezone = null): self
+    public static function now(): self
     {
-        return new self(new \DateTimeImmutable('now', $timezone));
+        return new self(new \DateTimeImmutable('now'));
     }
 
     public static function of(int $hour, int $minute, int $second): self
