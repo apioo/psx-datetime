@@ -1,7 +1,7 @@
 {
   "name": "psx/datetime",
-  "description": "Date and time implementations which only accept RFC3339 formats",
-  "keywords": ["date", "time", "rfc3339"],
+  "description": "PHP port of the Java JSR310 time API",
+  "keywords": ["date", "time", "RFC3339", "JSR310"],
   "homepage": "https://phpsx.org",
   "license": "Apache-2.0",
   "authors": [
