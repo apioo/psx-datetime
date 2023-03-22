@@ -15,7 +15,12 @@ PHP port of the Java JSR 310 time API. This package provides the following class
 | DayOfWeek     | A day-of-week, such as 'Tuesday'                                                                     |
 | Month         | A month-of-year, such as 'July'                                                                      |
 
+All classes are immutable, this means that every modification to the object returns a new instance
+containing the modification.
+
 ## Usage
+
+The following snippet shows some examples how you can use the API.
 
 ```php
 <?php
@@ -27,16 +32,29 @@ use PSX\DateTime\LocalTime;
 use PSX\DateTime\Period;
 
 // date time
-$dateTime = LocalDateTime::parse('2016-03-28T23:27:00Z');
-$dateTime = LocalDateTime::of(2016, 3, 28, 23, 27, 0);
+$dateTime = LocalDateTime::parse('2023-03-22T22:56:00Z');
+$dateTime = LocalDateTime::of(2023, 3, 22, 22, 56, 0);
+
+$dateTime->getYear(); // 2023
+$dateTime->getMonth(); // Month::MARCH
+$dateTime->getMonthValue(); // 3
+$dateTime->getDayOfMonth(); // 22
+$dateTime->getDayOfWeek(); // 3
+$dateTime->getHour(); // 22
+$dateTime->getMinute(); // 56
+$dateTime->getSecond(); // 0
+
+$dateTime->plusDays(1);
+$dateTime->minusDays(1);
+$dateTime->withDayOfMonth(1);
 
 echo $dateTime->toString(); // 2016-03-28T23:27:00Z
 
 // date
-$date = LocalDate::parse('2016-03-28');
-$date = LocalDate::of(2016, 3, 28);
+$date = LocalDate::parse('2023-03-22');
+$date = LocalDate::of(2023, 3, 22);
 
-echo $date->toString(); // 2016-03-28
+echo $date->toString(); // 2023-03-22
 
 // time
 $time = LocalTime::parse('23:27:00');
