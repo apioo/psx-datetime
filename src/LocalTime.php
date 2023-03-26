@@ -30,7 +30,7 @@ use PSX\DateTime\Exception\InvalidFormatException;
  * @link    https://phpsx.org
  * @see     https://docs.oracle.com/javase/8/docs/api/java/time/LocalTime.html
  */
-class LocalTime implements \JsonSerializable
+class LocalTime implements \JsonSerializable, \Stringable
 {
     use LocalTimeTrait;
     use ComparisonTrait;

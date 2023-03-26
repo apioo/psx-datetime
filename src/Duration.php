@@ -30,7 +30,7 @@ use PSX\DateTime\Exception\InvalidFormatException;
  * @link    https://phpsx.org
  * @see     https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html
  */
-class Duration implements \JsonSerializable
+class Duration implements \JsonSerializable, \Stringable
 {
     private \DateInterval $internal;
 
