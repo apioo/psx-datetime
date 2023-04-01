@@ -179,6 +179,11 @@ class Duration implements \JsonSerializable, \Stringable
         return new self($internal);
     }
 
+    public function toInterval(): \DateInterval
+    {
+        return clone $this->internal;
+    }
+
     public function toString(): string
     {
         $duration = 'P';
