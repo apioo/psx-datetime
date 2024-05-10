@@ -1,7 +1,7 @@
 {
   "name": "psx/datetime",
   "description": "PHP port of the Java JSR310 time API",
-  "keywords": ["date", "time", "RFC3339", "JSR310"],
+  "keywords": ["date", "time", "date-time", "RFC3339", "JSR310", "joda"],
   "homepage": "https://phpsx.org",
   "license": "Apache-2.0",
   "authors": [
