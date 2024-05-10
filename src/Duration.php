@@ -84,9 +84,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function minusHours(int $hoursToSubtract): self
     {
-        $internal = clone $this->internal;
-        $internal->h = $internal->h - $hoursToSubtract;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->h - $hoursToSubtract, $this->internal->i, $this->internal->s)));
     }
 
     /**
@@ -94,9 +92,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function minusMinutes(int $minutesToSubtract): self
     {
-        $internal = clone $this->internal;
-        $internal->i = $internal->i - $minutesToSubtract;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->h, $this->internal->i - $minutesToSubtract, $this->internal->s)));
     }
 
     /**
@@ -104,9 +100,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function minusSeconds(int $secondsToSubtract): self
     {
-        $internal = clone $this->internal;
-        $internal->s = $internal->s - $secondsToSubtract;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->h, $this->internal->i, $this->internal->s - $secondsToSubtract)));
     }
 
     /**
@@ -124,9 +118,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function plusHours(int $hoursToAdd): self
     {
-        $internal = clone $this->internal;
-        $internal->h = $internal->h + $hoursToAdd;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->h + $hoursToAdd, $this->internal->i, $this->internal->s)));
     }
 
     /**
@@ -134,9 +126,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function plusMinutes(int $minutesToAdd): self
     {
-        $internal = clone $this->internal;
-        $internal->i = $internal->i + $minutesToAdd;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->h, $this->internal->i + $minutesToAdd, $this->internal->s)));
     }
 
     /**
@@ -144,9 +134,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function plusSeconds(int $secondsToAdd): self
     {
-        $internal = clone $this->internal;
-        $internal->s = $internal->s + $secondsToAdd;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->h, $this->internal->i, $this->internal->s + $secondsToAdd)));
     }
 
     /**
@@ -154,9 +142,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function withHours(int $hours): self
     {
-        $internal = clone $this->internal;
-        $internal->h = $hours;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($hours, $this->internal->i, $this->internal->s)));
     }
 
     /**
@@ -164,9 +150,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function withMinutes(int $minutes): self
     {
-        $internal = clone $this->internal;
-        $internal->i = $minutes;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->h, $minutes, $this->internal->s)));
     }
 
     /**
@@ -174,9 +158,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function withSeconds(int $seconds): self
     {
-        $internal = clone $this->internal;
-        $internal->s = $seconds;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->h, $this->internal->i, $seconds)));
     }
 
     public function toInterval(): \DateInterval
@@ -186,22 +168,7 @@ class Duration implements \JsonSerializable, \Stringable
 
     public function toString(): string
     {
-        $duration = 'P';
-        $duration.= 'T';
-
-        if ($this->internal->h > 0) {
-            $duration.= $this->internal->h . 'H';
-        }
-
-        if ($this->internal->i > 0) {
-            $duration.= $this->internal->i . 'M';
-        }
-
-        if ($this->internal->s > 0) {
-            $duration.= $this->internal->s . 'S';
-        }
-
-        return $duration;
+        return $this->buildString($this->internal->h, $this->internal->i, $this->internal->s);
     }
 
     public function __toString()
@@ -212,6 +179,26 @@ class Duration implements \JsonSerializable, \Stringable
     public function jsonSerialize(): string
     {
         return $this->toString();
+    }
+
+    private function buildString(int $h, int $i, int $s): string
+    {
+        $duration = 'P';
+        $duration.= 'T';
+
+        if ($h > 0) {
+            $duration.= $h . 'H';
+        }
+
+        if ($i > 0) {
+            $duration.= $i . 'M';
+        }
+
+        if ($s > 0) {
+            $duration.= $s . 'S';
+        }
+
+        return $duration;
     }
 
     public static function from(\DateInterval $interval): self

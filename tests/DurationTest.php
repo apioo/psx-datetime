@@ -105,6 +105,78 @@ class DurationTest extends TestCase
         $this->assertEquals('PT20S', $duration->toString());
     }
 
+    public function testDurationMinusHours()
+    {
+        $duration = Duration::parse('PT1H1M1S');
+        $duration = $duration->minusHours(1);
+
+        $this->assertEquals('PT1M1S', $duration->toString());
+    }
+
+    public function testDurationMinusMinutes()
+    {
+        $duration = Duration::parse('PT1H1M1S');
+        $duration = $duration->minusMinutes(1);
+
+        $this->assertEquals('PT1H1S', $duration->toString());
+    }
+
+    public function testDurationMinusSeconds()
+    {
+        $duration = Duration::parse('PT1H1M1S');
+        $duration = $duration->minusSeconds(1);
+
+        $this->assertEquals('PT1H1M', $duration->toString());
+    }
+
+    public function testDurationPlusHours()
+    {
+        $duration = Duration::parse('PT1H1M1S');
+        $duration = $duration->plusHours(1);
+
+        $this->assertEquals('PT2H1M1S', $duration->toString());
+    }
+
+    public function testDurationPlusMinutes()
+    {
+        $duration = Duration::parse('PT1H1M1S');
+        $duration = $duration->plusMinutes(1);
+
+        $this->assertEquals('PT1H2M1S', $duration->toString());
+    }
+
+    public function testDurationPlusSeconds()
+    {
+        $duration = Duration::parse('PT1H1M1S');
+        $duration = $duration->plusSeconds(1);
+
+        $this->assertEquals('PT1H1M2S', $duration->toString());
+    }
+
+    public function testDurationWithHours()
+    {
+        $duration = Duration::parse('PT1H1M1S');
+        $duration = $duration->withHours(1);
+
+        $this->assertEquals('PT1H1M1S', $duration->toString());
+    }
+
+    public function testDurationWithMinutes()
+    {
+        $duration = Duration::parse('PT1H1M1S');
+        $duration = $duration->withMinutes(1);
+
+        $this->assertEquals('PT1H1M1S', $duration->toString());
+    }
+
+    public function testDurationWithSeconds()
+    {
+        $duration = Duration::parse('PT1H1M1S');
+        $duration = $duration->withSeconds(1);
+
+        $this->assertEquals('PT1H1M1S', $duration->toString());
+    }
+
     public function testOf()
     {
         $duration = Duration::of(1, 1, 1);

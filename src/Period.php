@@ -84,9 +84,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function minusDays(int $daysToSubtract): self
     {
-        $internal = clone $this->internal;
-        $internal->d = $internal->d - $daysToSubtract;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->y, $this->internal->m, $this->internal->d - $daysToSubtract)));
     }
 
     /**
@@ -94,9 +92,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function minusMonths(int $monthsToSubtract): self
     {
-        $internal = clone $this->internal;
-        $internal->m = $internal->m - $monthsToSubtract;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->y, $this->internal->m - $monthsToSubtract, $this->internal->d)));
     }
 
     /**
@@ -104,9 +100,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function minusYears(int $yearsToSubtract): self
     {
-        $internal = clone $this->internal;
-        $internal->y = $internal->y - $yearsToSubtract;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->y - $yearsToSubtract, $this->internal->m, $this->internal->d)));
     }
 
     /**
@@ -124,9 +118,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function plusDays(int $daysToAdd): self
     {
-        $internal = clone $this->internal;
-        $internal->d = $internal->d + $daysToAdd;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->y, $this->internal->m, $this->internal->d + $daysToAdd)));
     }
 
     /**
@@ -134,9 +126,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function plusMonths(int $monthsToAdd): self
     {
-        $internal = clone $this->internal;
-        $internal->m = $internal->m + $monthsToAdd;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->y, $this->internal->m + $monthsToAdd, $this->internal->d)));
     }
 
     /**
@@ -144,9 +134,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function plusYears(int $yearsToAdd): self
     {
-        $internal = clone $this->internal;
-        $internal->y = $internal->y + $yearsToAdd;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->y + $yearsToAdd, $this->internal->m, $this->internal->d)));
     }
 
     /**
@@ -154,9 +142,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function withDays(int $days): self
     {
-        $internal = clone $this->internal;
-        $internal->d = $days;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->y, $this->internal->m, $days)));
     }
 
     /**
@@ -164,9 +150,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function withMonths(int $months): self
     {
-        $internal = clone $this->internal;
-        $internal->m = $months;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($this->internal->y, $months, $this->internal->d)));
     }
 
     /**
@@ -174,9 +158,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function withYears(int $years): self
     {
-        $internal = clone $this->internal;
-        $internal->y = $years;
-        return new self($internal);
+        return new self(new \DateInterval($this->buildString($years, $this->internal->m, $this->internal->d)));
     }
 
     public function toInterval(): \DateInterval
@@ -186,21 +168,7 @@ class Period implements \JsonSerializable, \Stringable
 
     public function toString(): string
     {
-        $duration = 'P';
-
-        if ($this->internal->y > 0) {
-            $duration.= $this->internal->y . 'Y';
-        }
-
-        if ($this->internal->m > 0) {
-            $duration.= $this->internal->m . 'M';
-        }
-
-        if ($this->internal->d > 0) {
-            $duration.= $this->internal->d . 'D';
-        }
-
-        return $duration;
+        return $this->buildString($this->internal->y, $this->internal->m, $this->internal->d);
     }
 
     public function __toString()
@@ -211,6 +179,25 @@ class Period implements \JsonSerializable, \Stringable
     public function jsonSerialize(): string
     {
         return $this->toString();
+    }
+
+    private function buildString(int $y, int $m, int $d): string
+    {
+        $duration = 'P';
+
+        if ($y > 0) {
+            $duration.= $y . 'Y';
+        }
+
+        if ($m > 0) {
+            $duration.= $m . 'M';
+        }
+
+        if ($d > 0) {
+            $duration.= $d . 'D';
+        }
+
+        return $duration;
     }
 
     public static function from(\DateInterval $interval): self

@@ -36,87 +36,159 @@ class PeriodTest extends TestCase
 {
     public function testDuration()
     {
-        $duration = Period::parse('P2015Y4M25DT19H35M20S');
+        $period = Period::parse('P2015Y4M25DT19H35M20S');
 
-        $this->assertEquals(2015, $duration->getYears());
-        $this->assertEquals(4, $duration->getMonths());
-        $this->assertEquals(25, $duration->getDays());
-        $this->assertEquals('P2015Y4M25D', $duration->toString());
-        $this->assertEquals('"P2015Y4M25D"', \json_encode($duration));
+        $this->assertEquals(2015, $period->getYears());
+        $this->assertEquals(4, $period->getMonths());
+        $this->assertEquals(25, $period->getDays());
+        $this->assertEquals('P2015Y4M25D', $period->toString());
+        $this->assertEquals('"P2015Y4M25D"', \json_encode($period));
     }
 
     public function testDurationYear()
     {
-        $duration = Period::parse('P2015Y');
+        $period = Period::parse('P2015Y');
 
-        $this->assertEquals(2015, $duration->getYears());
-        $this->assertEquals(0, $duration->getMonths());
-        $this->assertEquals(0, $duration->getDays());
-        $this->assertEquals('P2015Y', $duration->toString());
+        $this->assertEquals(2015, $period->getYears());
+        $this->assertEquals(0, $period->getMonths());
+        $this->assertEquals(0, $period->getDays());
+        $this->assertEquals('P2015Y', $period->toString());
     }
 
     public function testDurationMonth()
     {
-        $duration = Period::parse('P4M');
+        $period = Period::parse('P4M');
 
-        $this->assertEquals(0, $duration->getYears());
-        $this->assertEquals(4, $duration->getMonths());
-        $this->assertEquals(0, $duration->getDays());
-        $this->assertEquals('P4M', $duration->toString());
+        $this->assertEquals(0, $period->getYears());
+        $this->assertEquals(4, $period->getMonths());
+        $this->assertEquals(0, $period->getDays());
+        $this->assertEquals('P4M', $period->toString());
     }
 
     public function testDurationDay()
     {
-        $duration = Period::parse('P25D');
+        $period = Period::parse('P25D');
 
-        $this->assertEquals(0, $duration->getYears());
-        $this->assertEquals(0, $duration->getMonths());
-        $this->assertEquals(25, $duration->getDays());
-        $this->assertEquals('P25D', $duration->toString());
+        $this->assertEquals(0, $period->getYears());
+        $this->assertEquals(0, $period->getMonths());
+        $this->assertEquals(25, $period->getDays());
+        $this->assertEquals('P25D', $period->toString());
     }
 
     public function testDurationHour()
     {
-        $duration = Period::parse('PT19H');
+        $period = Period::parse('PT19H');
 
-        $this->assertEquals(0, $duration->getYears());
-        $this->assertEquals(0, $duration->getMonths());
-        $this->assertEquals(0, $duration->getDays());
-        $this->assertEquals('P', $duration->toString());
+        $this->assertEquals(0, $period->getYears());
+        $this->assertEquals(0, $period->getMonths());
+        $this->assertEquals(0, $period->getDays());
+        $this->assertEquals('P', $period->toString());
     }
 
     public function testDurationMinute()
     {
-        $duration = Period::parse('PT35M');
+        $period = Period::parse('PT35M');
 
-        $this->assertEquals(0, $duration->getYears());
-        $this->assertEquals(0, $duration->getMonths());
-        $this->assertEquals(0, $duration->getDays());
-        $this->assertEquals('P', $duration->toString());
+        $this->assertEquals(0, $period->getYears());
+        $this->assertEquals(0, $period->getMonths());
+        $this->assertEquals(0, $period->getDays());
+        $this->assertEquals('P', $period->toString());
     }
 
     public function testDurationSecond()
     {
-        $duration = Period::parse('PT20S');
+        $period = Period::parse('PT20S');
 
-        $this->assertEquals(0, $duration->getYears());
-        $this->assertEquals(0, $duration->getMonths());
-        $this->assertEquals(0, $duration->getDays());
-        $this->assertEquals('P', $duration->toString());
+        $this->assertEquals(0, $period->getYears());
+        $this->assertEquals(0, $period->getMonths());
+        $this->assertEquals(0, $period->getDays());
+        $this->assertEquals('P', $period->toString());
+    }
+
+    public function testDurationMinusYears()
+    {
+        $period = Period::parse('P1Y1M1D');
+        $period = $period->minusYears(1);
+
+        $this->assertEquals('P1M1D', $period->toString());
+    }
+
+    public function testDurationMinusMonths()
+    {
+        $period = Period::parse('P1Y1M1D');
+        $period = $period->minusMonths(1);
+
+        $this->assertEquals('P1Y1D', $period->toString());
+    }
+
+    public function testDurationMinusDays()
+    {
+        $period = Period::parse('P1Y1M1D');
+        $period = $period->minusDays(1);
+
+        $this->assertEquals('P1Y1M', $period->toString());
+    }
+
+    public function testDurationPlusYears()
+    {
+        $period = Period::parse('P1Y1M1D');
+        $period = $period->plusYears(1);
+
+        $this->assertEquals('P2Y1M1D', $period->toString());
+    }
+
+    public function testDurationPlusMonths()
+    {
+        $period = Period::parse('P1Y1M1D');
+        $period = $period->plusMonths(1);
+
+        $this->assertEquals('P1Y2M1D', $period->toString());
+    }
+
+    public function testDurationPlusDays()
+    {
+        $period = Period::parse('P1Y1M1D');
+        $period = $period->plusDays(1);
+
+        $this->assertEquals('P1Y1M2D', $period->toString());
+    }
+
+    public function testDurationWithYears()
+    {
+        $period = Period::parse('P1Y1M1D');
+        $period = $period->withYears(1);
+
+        $this->assertEquals('P1Y1M1D', $period->toString());
+    }
+
+    public function testDurationWithMonths()
+    {
+        $period = Period::parse('P1Y1M1D');
+        $period = $period->withMonths(1);
+
+        $this->assertEquals('P1Y1M1D', $period->toString());
+    }
+
+    public function testDurationWithDays()
+    {
+        $period = Period::parse('P1Y1M1D');
+        $period = $period->withDays(1);
+
+        $this->assertEquals('P1Y1M1D', $period->toString());
     }
 
     public function testOf()
     {
-        $duration = Period::of(1, 1, 1);
+        $period = Period::of(1, 1, 1);
 
-        $this->assertEquals('P1Y1M1D', $duration->toString());
+        $this->assertEquals('P1Y1M1D', $period->toString());
     }
 
     public function testToString()
     {
-        $duration = Period::of(1, 1, 1);
+        $period = Period::of(1, 1, 1);
 
-        $this->assertEquals('P1Y1M1D', (string) $duration);
+        $this->assertEquals('P1Y1M1D', (string) $period);
     }
 
     public function testDurationEmpty()
