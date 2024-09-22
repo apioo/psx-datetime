@@ -69,7 +69,7 @@ class LocalTime implements \JsonSerializable, \Stringable
 
     public static function now(): self
     {
-        return new self(new \DateTimeImmutable('now'));
+        return new self(new \DateTimeImmutable('1970-01-01 ' . date('H:i:s')));
     }
 
     public static function of(int $hour, int $minute, int $second): self
@@ -84,7 +84,7 @@ class LocalTime implements \JsonSerializable, \Stringable
             throw new InvalidFormatException('Must be valid time format');
         }
 
-        return new self(new \DateTimeImmutable($date));
+        return new self(new \DateTimeImmutable('1970-01-01 ' . $date));
     }
 
     /**
