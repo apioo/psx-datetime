@@ -20,7 +20,10 @@
 
 namespace PSX\DateTime;
 
+use DateInterval;
+use JsonSerializable;
 use PSX\DateTime\Exception\InvalidFormatException;
+use Stringable;
 
 /**
  * A date-based amount of time in the ISO-8601 calendar system, such as '2 years, 3 months and 4 days'
@@ -30,11 +33,11 @@ use PSX\DateTime\Exception\InvalidFormatException;
  * @link    https://phpsx.org
  * @see     https://docs.oracle.com/javase/8/docs/api/java/time/Period.html
  */
-class Period implements \JsonSerializable, \Stringable
+final class Period implements JsonSerializable, Stringable
 {
-    private \DateInterval $internal;
+    private DateInterval $internal;
 
-    private function __construct(\DateInterval $interval)
+    private function __construct(DateInterval $interval)
     {
         $this->internal = $interval;
     }
@@ -84,7 +87,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function minusDays(int $daysToSubtract): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->y, $this->internal->m, $this->internal->d - $daysToSubtract)));
+        return new self(new DateInterval($this->buildString($this->internal->y, $this->internal->m, $this->internal->d - $daysToSubtract)));
     }
 
     /**
@@ -92,7 +95,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function minusMonths(int $monthsToSubtract): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->y, $this->internal->m - $monthsToSubtract, $this->internal->d)));
+        return new self(new DateInterval($this->buildString($this->internal->y, $this->internal->m - $monthsToSubtract, $this->internal->d)));
     }
 
     /**
@@ -100,7 +103,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function minusYears(int $yearsToSubtract): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->y - $yearsToSubtract, $this->internal->m, $this->internal->d)));
+        return new self(new DateInterval($this->buildString($this->internal->y - $yearsToSubtract, $this->internal->m, $this->internal->d)));
     }
 
     /**
@@ -118,7 +121,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function plusDays(int $daysToAdd): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->y, $this->internal->m, $this->internal->d + $daysToAdd)));
+        return new self(new DateInterval($this->buildString($this->internal->y, $this->internal->m, $this->internal->d + $daysToAdd)));
     }
 
     /**
@@ -126,7 +129,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function plusMonths(int $monthsToAdd): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->y, $this->internal->m + $monthsToAdd, $this->internal->d)));
+        return new self(new DateInterval($this->buildString($this->internal->y, $this->internal->m + $monthsToAdd, $this->internal->d)));
     }
 
     /**
@@ -134,7 +137,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function plusYears(int $yearsToAdd): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->y + $yearsToAdd, $this->internal->m, $this->internal->d)));
+        return new self(new DateInterval($this->buildString($this->internal->y + $yearsToAdd, $this->internal->m, $this->internal->d)));
     }
 
     /**
@@ -142,7 +145,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function withDays(int $days): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->y, $this->internal->m, $days)));
+        return new self(new DateInterval($this->buildString($this->internal->y, $this->internal->m, $days)));
     }
 
     /**
@@ -150,7 +153,7 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function withMonths(int $months): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->y, $months, $this->internal->d)));
+        return new self(new DateInterval($this->buildString($this->internal->y, $months, $this->internal->d)));
     }
 
     /**
@@ -158,10 +161,10 @@ class Period implements \JsonSerializable, \Stringable
      */
     public function withYears(int $years): self
     {
-        return new self(new \DateInterval($this->buildString($years, $this->internal->m, $this->internal->d)));
+        return new self(new DateInterval($this->buildString($years, $this->internal->m, $this->internal->d)));
     }
 
-    public function toInterval(): \DateInterval
+    public function toInterval(): DateInterval
     {
         return clone $this->internal;
     }
@@ -171,7 +174,7 @@ class Period implements \JsonSerializable, \Stringable
         return $this->buildString($this->internal->y, $this->internal->m, $this->internal->d);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->toString();
     }
@@ -200,34 +203,34 @@ class Period implements \JsonSerializable, \Stringable
         return $duration;
     }
 
-    public static function from(\DateInterval $interval): self
+    public static function from(DateInterval $interval): self
     {
         return new self($interval);
     }
 
     public static function of(int $years, int $months, int $days): self
     {
-        return new self(new \DateInterval('P' . $years . 'Y' . $months . 'M' . $days . 'D'));
+        return new self(new DateInterval('P' . $years . 'Y' . $months . 'M' . $days . 'D'));
     }
 
     public static function ofDays(int $days): self
     {
-        return new self(new \DateInterval('P' . $days . 'D'));
+        return new self(new DateInterval('P' . $days . 'D'));
     }
 
     public static function ofMonths(int $months): self
     {
-        return new self(new \DateInterval('P' . $months . 'M'));
+        return new self(new DateInterval('P' . $months . 'M'));
     }
 
     public static function ofWeeks(int $weeks): self
     {
-        return new self(new \DateInterval('P' . $weeks . 'W'));
+        return new self(new DateInterval('P' . $weeks . 'W'));
     }
 
     public static function ofYears(int $years): self
     {
-        return new self(new \DateInterval('P' . $years . 'Y'));
+        return new self(new DateInterval('P' . $years . 'Y'));
     }
 
     /**
@@ -240,7 +243,7 @@ class Period implements \JsonSerializable, \Stringable
             throw new InvalidFormatException('Must be valid interval format');
         }
 
-        return new self(new \DateInterval($date));
+        return new self(new DateInterval($date));
     }
 
     /**

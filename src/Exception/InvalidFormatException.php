@@ -20,6 +20,8 @@
 
 namespace PSX\DateTime\Exception;
 
+use InvalidArgumentException;
+
 /**
  * InvalidFormatException
  *
@@ -27,6 +29,6 @@ namespace PSX\DateTime\Exception;
  * @license http://www.apache.org/licenses/LICENSE-2.0
  * @link    https://phpsx.org
  */
-class InvalidFormatException extends \InvalidArgumentException
+final class InvalidFormatException extends InvalidArgumentException
 {
 }

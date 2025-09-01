@@ -20,7 +20,10 @@
 
 namespace PSX\DateTime;
 
+use DateInterval;
+use JsonSerializable;
 use PSX\DateTime\Exception\InvalidFormatException;
+use Stringable;
 
 /**
  * A time-based amount of time, such as '34.5 seconds'
@@ -30,11 +33,11 @@ use PSX\DateTime\Exception\InvalidFormatException;
  * @link    https://phpsx.org
  * @see     https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html
  */
-class Duration implements \JsonSerializable, \Stringable
+final class Duration implements JsonSerializable, Stringable
 {
-    private \DateInterval $internal;
+    private DateInterval $internal;
 
-    private function __construct(\DateInterval $interval)
+    private function __construct(DateInterval $interval)
     {
         $this->internal = $interval;
     }
@@ -84,7 +87,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function minusHours(int $hoursToSubtract): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->h - $hoursToSubtract, $this->internal->i, $this->internal->s)));
+        return new self(new DateInterval($this->buildString($this->internal->h - $hoursToSubtract, $this->internal->i, $this->internal->s)));
     }
 
     /**
@@ -92,7 +95,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function minusMinutes(int $minutesToSubtract): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->h, $this->internal->i - $minutesToSubtract, $this->internal->s)));
+        return new self(new DateInterval($this->buildString($this->internal->h, $this->internal->i - $minutesToSubtract, $this->internal->s)));
     }
 
     /**
@@ -100,7 +103,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function minusSeconds(int $secondsToSubtract): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->h, $this->internal->i, $this->internal->s - $secondsToSubtract)));
+        return new self(new DateInterval($this->buildString($this->internal->h, $this->internal->i, $this->internal->s - $secondsToSubtract)));
     }
 
     /**
@@ -118,7 +121,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function plusHours(int $hoursToAdd): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->h + $hoursToAdd, $this->internal->i, $this->internal->s)));
+        return new self(new DateInterval($this->buildString($this->internal->h + $hoursToAdd, $this->internal->i, $this->internal->s)));
     }
 
     /**
@@ -126,7 +129,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function plusMinutes(int $minutesToAdd): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->h, $this->internal->i + $minutesToAdd, $this->internal->s)));
+        return new self(new DateInterval($this->buildString($this->internal->h, $this->internal->i + $minutesToAdd, $this->internal->s)));
     }
 
     /**
@@ -134,7 +137,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function plusSeconds(int $secondsToAdd): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->h, $this->internal->i, $this->internal->s + $secondsToAdd)));
+        return new self(new DateInterval($this->buildString($this->internal->h, $this->internal->i, $this->internal->s + $secondsToAdd)));
     }
 
     /**
@@ -142,7 +145,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function withHours(int $hours): self
     {
-        return new self(new \DateInterval($this->buildString($hours, $this->internal->i, $this->internal->s)));
+        return new self(new DateInterval($this->buildString($hours, $this->internal->i, $this->internal->s)));
     }
 
     /**
@@ -150,7 +153,7 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function withMinutes(int $minutes): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->h, $minutes, $this->internal->s)));
+        return new self(new DateInterval($this->buildString($this->internal->h, $minutes, $this->internal->s)));
     }
 
     /**
@@ -158,10 +161,10 @@ class Duration implements \JsonSerializable, \Stringable
      */
     public function withSeconds(int $seconds): self
     {
-        return new self(new \DateInterval($this->buildString($this->internal->h, $this->internal->i, $seconds)));
+        return new self(new DateInterval($this->buildString($this->internal->h, $this->internal->i, $seconds)));
     }
 
-    public function toInterval(): \DateInterval
+    public function toInterval(): DateInterval
     {
         return clone $this->internal;
     }
@@ -171,7 +174,7 @@ class Duration implements \JsonSerializable, \Stringable
         return $this->buildString($this->internal->h, $this->internal->i, $this->internal->s);
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->toString();
     }
@@ -201,29 +204,29 @@ class Duration implements \JsonSerializable, \Stringable
         return $duration;
     }
 
-    public static function from(\DateInterval $interval): self
+    public static function from(DateInterval $interval): self
     {
         return new self($interval);
     }
 
     public static function of(int $hours, int $minutes, int $seconds): self
     {
-        return new self(new \DateInterval('PT' . $hours . 'H' . $minutes . 'M' . $seconds . 'S'));
+        return new self(new DateInterval('PT' . $hours . 'H' . $minutes . 'M' . $seconds . 'S'));
     }
 
     public static function ofHours(int $hours): self
     {
-        return new self(new \DateInterval('PT' . $hours . 'H'));
+        return new self(new DateInterval('PT' . $hours . 'H'));
     }
 
     public static function ofMinutes(int $minutes): self
     {
-        return new self(new \DateInterval('PT' . $minutes . 'M'));
+        return new self(new DateInterval('PT' . $minutes . 'M'));
     }
 
     public static function ofSeconds(int $seconds): self
     {
-        return new self(new \DateInterval('PT' . $seconds . 'S'));
+        return new self(new DateInterval('PT' . $seconds . 'S'));
     }
 
     /**
@@ -236,7 +239,7 @@ class Duration implements \JsonSerializable, \Stringable
             throw new InvalidFormatException('Must be valid interval format');
         }
 
-        return new self(new \DateInterval($date));
+        return new self(new DateInterval($date));
     }
 
     /**

@@ -20,6 +20,7 @@
 
 namespace PSX\DateTime;
 
+use DateTimeImmutable;
 use PSX\DateTime\Exception\InvalidFormatException;
 
 /**
@@ -30,14 +31,14 @@ use PSX\DateTime\Exception\InvalidFormatException;
  * @link    https://phpsx.org
  * @see     https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html
  */
-class LocalDate implements \JsonSerializable, \Stringable
+final class LocalDate implements \JsonSerializable, \Stringable
 {
     use LocalDateTrait;
     use ComparisonTrait;
 
-    private \DateTimeImmutable $internal;
+    private DateTimeImmutable $internal;
 
-    private function __construct(\DateTimeImmutable $now)
+    private function __construct(DateTimeImmutable $now)
     {
         $this->internal = $now;
     }
@@ -47,12 +48,12 @@ class LocalDate implements \JsonSerializable, \Stringable
         return $this->internal->format('Y-m-d');
     }
 
-    public function toDateTime(): \DateTimeImmutable
+    public function toDateTime(): DateTimeImmutable
     {
         return $this->internal;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->toString();
     }
@@ -64,17 +65,22 @@ class LocalDate implements \JsonSerializable, \Stringable
 
     public static function from(\DateTimeInterface $date): self
     {
-        return new self(\DateTimeImmutable::createFromInterface($date));
+        return new self(DateTimeImmutable::createFromInterface($date));
     }
 
     public static function now(): self
     {
-        return new self(new \DateTimeImmutable('now'));
+        return new self(new DateTimeImmutable('now'));
     }
 
     public static function of(int $year, Month|int $month, int $day): self
     {
-        return new self(new \DateTimeImmutable('@' . gmmktime(0, 0, 0, $month instanceof Month ? $month->value : $month, $day, $year)));
+        $time = gmmktime(0, 0, 0, $month instanceof Month ? $month->value : $month, $day, $year);
+        if ($time === false) {
+            $time = time();
+        }
+
+        return new self(new DateTimeImmutable('@' . $time));
     }
 
     public static function parse(string $date): self
@@ -84,7 +90,7 @@ class LocalDate implements \JsonSerializable, \Stringable
             throw new InvalidFormatException('Must be valid date format');
         }
 
-        return new self(new \DateTimeImmutable($date));
+        return new self(new DateTimeImmutable($date));
     }
 
     /**

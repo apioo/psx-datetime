@@ -20,7 +20,11 @@
 
 namespace PSX\DateTime;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+use JsonSerializable;
 use PSX\DateTime\Exception\InvalidFormatException;
+use Stringable;
 
 /**
  * A time without a time-zone in the ISO-8601 calendar system, such as 10:15:30
@@ -30,14 +34,14 @@ use PSX\DateTime\Exception\InvalidFormatException;
  * @link    https://phpsx.org
  * @see     https://docs.oracle.com/javase/8/docs/api/java/time/LocalTime.html
  */
-class LocalTime implements \JsonSerializable, \Stringable
+final class LocalTime implements JsonSerializable, Stringable
 {
     use LocalTimeTrait;
     use ComparisonTrait;
 
-    private \DateTimeImmutable $internal;
+    private DateTimeImmutable $internal;
 
-    private function __construct(\DateTimeImmutable $now)
+    private function __construct(DateTimeImmutable $now)
     {
         $this->internal = $now;
     }
@@ -47,12 +51,12 @@ class LocalTime implements \JsonSerializable, \Stringable
         return $this->internal->format('H:i:s');
     }
 
-    public function toDateTime(): \DateTimeImmutable
+    public function toDateTime(): DateTimeImmutable
     {
         return $this->internal;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->toString();
     }
@@ -62,19 +66,24 @@ class LocalTime implements \JsonSerializable, \Stringable
         return $this->toString();
     }
 
-    public static function from(\DateTimeInterface $time): self
+    public static function from(DateTimeInterface $time): self
     {
-        return new self(\DateTimeImmutable::createFromInterface($time));
+        return new self(DateTimeImmutable::createFromInterface($time));
     }
 
     public static function now(): self
     {
-        return new self(new \DateTimeImmutable('1970-01-01 ' . date('H:i:s')));
+        return new self(new DateTimeImmutable('1970-01-01 ' . date('H:i:s')));
     }
 
     public static function of(int $hour, int $minute, int $second): self
     {
-        return new self(new \DateTimeImmutable('@' . gmmktime($hour, $minute, $second, 1, 1, 1970)));
+        $time = gmmktime($hour, $minute, $second, 1, 1, 1970);
+        if ($time === false) {
+            $time = time();
+        }
+
+        return new self(new DateTimeImmutable('@' . $time));
     }
 
     public static function parse(string $date): self
@@ -84,7 +93,7 @@ class LocalTime implements \JsonSerializable, \Stringable
             throw new InvalidFormatException('Must be valid time format');
         }
 
-        return new self(new \DateTimeImmutable('1970-01-01 ' . $date));
+        return new self(new DateTimeImmutable('1970-01-01 ' . $date));
     }
 
     /**

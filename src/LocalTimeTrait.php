@@ -20,6 +20,8 @@
 
 namespace PSX\DateTime;
 
+use DateInterval;
+
 /**
  * LocalTimeTrait
  *
@@ -52,32 +54,32 @@ trait LocalTimeTrait
 
     public function minusHours(int $hoursToSubtract): self
     {
-        return new self($this->internal->sub(new \DateInterval('PT' . $hoursToSubtract . 'H')));
+        return new self($this->internal->sub(new DateInterval('PT' . $hoursToSubtract . 'H')));
     }
 
     public function minusMinutes(int $minutesToSubtract): self
     {
-        return new self($this->internal->sub(new \DateInterval('PT' . $minutesToSubtract . 'M')));
+        return new self($this->internal->sub(new DateInterval('PT' . $minutesToSubtract . 'M')));
     }
 
     public function minusSeconds(int $secondsToSubtract): self
     {
-        return new self($this->internal->sub(new \DateInterval('PT' . $secondsToSubtract . 'S')));
+        return new self($this->internal->sub(new DateInterval('PT' . $secondsToSubtract . 'S')));
     }
 
     public function plusHours(int $hoursToAdd): self
     {
-        return new self($this->internal->add(new \DateInterval('PT' . $hoursToAdd . 'H')));
+        return new self($this->internal->add(new DateInterval('PT' . $hoursToAdd . 'H')));
     }
 
     public function plusMinutes(int $minutesToAdd): self
     {
-        return new self($this->internal->add(new \DateInterval('PT' . $minutesToAdd . 'M')));
+        return new self($this->internal->add(new DateInterval('PT' . $minutesToAdd . 'M')));
     }
 
     public function plusSeconds(int $secondsToAdd): self
     {
-        return new self($this->internal->add(new \DateInterval('PT' . $secondsToAdd . 'S')));
+        return new self($this->internal->add(new DateInterval('PT' . $secondsToAdd . 'S')));
     }
 
     public function withHour(int $hour): self

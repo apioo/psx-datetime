@@ -20,6 +20,8 @@
 
 namespace PSX\DateTime;
 
+use DateInterval;
+
 /**
  * LocalDateTrait
  *
@@ -77,42 +79,42 @@ trait LocalDateTrait
 
     public function minusDays(int $daysToSubtract): self
     {
-        return new self($this->internal->sub(new \DateInterval('P' . $daysToSubtract . 'D')));
+        return new self($this->internal->sub(new DateInterval('P' . $daysToSubtract . 'D')));
     }
 
     public function minusMonths(int $monthsToSubtract): self
     {
-        return new self($this->internal->sub(new \DateInterval('P' . $monthsToSubtract . 'M')));
+        return new self($this->internal->sub(new DateInterval('P' . $monthsToSubtract . 'M')));
     }
 
     public function minusWeeks(int $weeksToSubtract): self
     {
-        return new self($this->internal->sub(new \DateInterval('P' . $weeksToSubtract . 'W')));
+        return new self($this->internal->sub(new DateInterval('P' . $weeksToSubtract . 'W')));
     }
 
     public function minusYears(int $yearsToSubtract): self
     {
-        return new self($this->internal->sub(new \DateInterval('P' . $yearsToSubtract . 'Y')));
+        return new self($this->internal->sub(new DateInterval('P' . $yearsToSubtract . 'Y')));
     }
 
     public function plusDays(int $daysToAdd): self
     {
-        return new self($this->internal->add(new \DateInterval('P' . $daysToAdd . 'D')));
+        return new self($this->internal->add(new DateInterval('P' . $daysToAdd . 'D')));
     }
 
     public function plusMonths(int $monthsToAdd): self
     {
-        return new self($this->internal->add(new \DateInterval('P' . $monthsToAdd . 'M')));
+        return new self($this->internal->add(new DateInterval('P' . $monthsToAdd . 'M')));
     }
 
     public function plusWeeks(int $weeksToAdd): self
     {
-        return new self($this->internal->add(new \DateInterval('P' . $weeksToAdd . 'W')));
+        return new self($this->internal->add(new DateInterval('P' . $weeksToAdd . 'W')));
     }
 
     public function plusYears(int $yearsToAdd): self
     {
-        return new self($this->internal->add(new \DateInterval('P' . $yearsToAdd . 'Y')));
+        return new self($this->internal->add(new DateInterval('P' . $yearsToAdd . 'Y')));
     }
 
     /**
