@@ -1,8 +1,6 @@
 
 # DateTime
 
-## About
-
 PHP port of the Java JSR 310 time API. This package provides the following classes:
 
 | Class         | Description                                                                                          |
