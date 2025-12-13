@@ -20,6 +20,7 @@
 
 namespace PSX\DateTime\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use PSX\DateTime\Exception\InvalidFormatException;
 use PSX\DateTime\LocalDateTime;
@@ -95,9 +96,7 @@ class LocalDateTimeTest extends TestCase
         $this->assertEquals('2015-04-25T19:35:20Z', $date->toString());
     }
 
-    /**
-     * @dataProvider providerRfc
-     */
+    #[DataProvider('providerRfc')]
     public function testRfcExamples($data, $expected)
     {
         $date = LocalDateTime::parse($data);
@@ -105,7 +104,7 @@ class LocalDateTimeTest extends TestCase
         $this->assertEquals($expected, $date->toString());
     }
 
-    public function providerRfc()
+    public static function providerRfc(): array
     {
         return [
             ['1985-04-12T23:20:50.52Z', '1985-04-12T23:20:50Z'],
